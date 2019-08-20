@@ -2,7 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-    entry: ['babel-polyfill', './src/js/index.js'],
+    entry: ['babel-polyfill', './src/js/index.js', './src/js/views/loginView.js', './src/js/views/registerView.js', './src/js/views/profileView.js', './src/js/views/viewProfile.js'],
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'js/bundle.js'
@@ -14,6 +14,22 @@ module.exports = {
         new HtmlWebpackPlugin({
             filename: 'index.html',
             template: './src/index.html'
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'login.html',
+            template: './src/login.html'
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'profile.html',
+            template: './src/profile.html'
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'register.html',
+            template: './src/register.html'
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'view-profile.html',
+            template: './src/view-profile.html'
         })
     ],
     module: {
@@ -24,7 +40,27 @@ module.exports = {
                 use: {
                     loader: 'babel-loader'
                 }
-            }
+            },
+            {
+                test: /\.(png|svg|jpg|gif)$/,
+                use: [
+                    {
+                    loader: 'file-loader',
+                    options: { 
+                        limit: 8000, // Convert images < 8kb to base64 strings
+                        name: 'imgs/[hash]-[name].[ext]'
+                    } 
+                }
+            ]
+            },
+            {
+                 test: /\.css$/,
+                 use: [
+                   'style-loader',
+                   'css-loader',
+                   'sass-loader'
+                 ]
+         }
         ]
     }
 };
