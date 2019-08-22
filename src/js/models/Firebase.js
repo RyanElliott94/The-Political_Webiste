@@ -325,13 +325,14 @@ export const getOtherUsersPosts = (userID, ele) => {
         FirebaseElements.otherUsersPostsRef(userID).once('value', function(snapshot) {
             snapshot.forEach(function(childData) {
               var postData = childData.val();
-              var postHTML = `<div class="card border my-3 mx-auto myPostCards" id="${postData.postID}">
-              <div class="card-header">
+              var postHTML = `<div class="card border-0 rounded-lg my-3 mx-auto myPostCards" id="${postData.postID}">
+              <div class="card-header pb-0 border-0 bg-white">
               <img src="${postData.photoThumb}" alt="" class="userPhoto rounded-circle img img-thumbnail float-left mr-2">
               <p class="username w-0 mt-1 mb-0">${postData.displayName}</p>
               <p class="postDate w-auto mt-0">${moment(postData.addedAt).fromNow()}</p>
               </div>
-            <div class="card-body text-dark">
+              <hr class="mx-auto" style="width:90%">
+            <div class="card-body pt-0 px-4 text-dark border-0">
               <p class="card-text postText">${postData.postBody}</p>
             </div>`;
               const item = document.querySelector(`${ele}`);
