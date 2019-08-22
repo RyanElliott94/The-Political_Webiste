@@ -7,52 +7,73 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0-11/css/all.min.css"></script>
 </head>
 <body>
-		<nav class="navbar navbar-light navbar-expand-sm">
-  <button class="navbar-toggler  ml-auto" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="container p-0">
-      <a class="navbar-brand" href="#">
-          <img  width="30" height="30" class="d-inline-block align-top nav" alt="">
-          The Political
-        </a>
-        
-  <div class="collapse navbar-collapse w-auto" id="navbarNav">
-    <ul class="navbar-nav">
-      <li class="nav-item text-center">
-        <a class="nav-link" href="index.html">Home</a>
-      </li>
-    </ul>
-  </div>
-  <form class="form-inline navbar-login navbar-light">
-    <button type="button" class="btn btn-sm m-2 bg-transparent logged-out" id="nav-logout">Log Out</button>
-    <a href="./register.html"><button type="button" class="btn btn-sm m-2 bg-transparent logged-in" id="nav-signup">Register</button></a>
-    <a href="./login.html"><button type="button" class="btn btn-sm m-2 bg-transparent logged-in" id="nav-login">Log In</button></a>
-  </form>
-</div>
-</nav>
+		<nav class="navbar navbar-light p-1 navbar-expand-sm shadow-sm">
+        <button class="navbar-toggler  ml-auto" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="d-flex mx-auto p-0">
+            <a class="navbar-brand align-self-center p-0" href="index.html">
+                <img  width="30" height="30" class="d-inline-block align-top nav" alt="">
+                The Political
+              </a>
+              
+        <div class="collapse navbar-collapse p-0" id="navbarNav">
+          <ul class="navbar-nav p-0">
+            <li class="nav-item align-self-center text-center">
+              <a class="nav-link p-0" href="index.html">Home</a>
+            </li>
+            <ul class="navbar-nav">
+                <li class="nav-item logged-out text-center">
+                  <a class="nav-link p-0 ml-2" href="./profile.html">My Profile</a>
+                </li>
+                </ul>
+          </ul>
+        </div>
 
-<div class="d-flex mx-auto profile-content shadow-sm">
-    <section class="profile-picture h-25">
-        <div class="media">
-            <div class="media-body ml-5">
-                <img src="" alt="" class="view-profile-pic-src ml-3 rounded-circle clearfix">
-          <h5 class="card-title">Username</h5>
-                <p class="view-username"></p>
-        
-                <h5 class="card-title">Bio</h5>
-                <p class="view-bio-desc"></p>
-        
-                <h5 class="card-title">Links</h5>
-                <p class="view-links"></p>
-            </div>
-          </div>
-  </section>
-    <section class="main-profile-content">
-                <img class="view-cover-pic-src float-right mb-5 mx-0 p-0" alt="">
-                <hr>
-                <div class="empty-1"></div>
-    </section>
+        <form class="form">
+            <input class="form-control search-users rounded-pill p-2" type="text" id="searchResults" placeholder="Find Someone" aria-label="Find Someone">
+            <div class="results bg-white ml-2 mt-1 rounded-lg">
+              </div>
+        </form>
+
+        <form class="form-inline navbar-login navbar-light">
+        <button type="button" class="btn btn-sm  bg-transparent logged-out align-self-center" id="nav-logout">Log Out</button>
+      
+        <a href="./register.html"><button type="button" class="btn btn-sm m-2 bg-transparent logged-in" id="nav-signup">Register</button></a>
+        <a href="./login.html"><button type="button" class="btn btn-sm m-2 bg-transparent logged-in" id="nav-login">Log In</button></a>
+        </form>
+      </div>
+      </nav>
+
+<section class="d-flex flex-nowrap top-profile-content align-self-start h-auto w-75 mx-auto">
+    <img class="view-cover-pic-src float-right mb-2 mx-0 p-0" alt="">
+    <img src="" alt="" class="view-profile-pic-src ml-4 rounded-circle clearfix">
+</section>
+
+<div class="d-flex flex-nowrap mx-5 w-75 mx-auto">
+    <div class="shortInfo p-3 w-25 align-self-start">
+        <h5 class="card-title">Username</h5>
+        <input type="text" autocomplete="name" class="form-control edit-mode setUsername">
+        <p class="view-username"></p>
+
+        <h5 class="card-title">Bio</h5>
+        <input type="text" autocomplete="name" class="form-control edit-mode setBio">
+        <p class="view-bio-desc"></p>
+
+        <h5 class="card-title">Links</h5>
+        <input type="text" autocomplete="name" class="form-control edit-mode setLinks">
+        <p class="view-links"></p>
+
+        <button class="btn mt-1 btn btn-outline-dark add-friend">Add as friend</button>
+    </div>
+
+    <div class="border-left border-right mx-3 p-3 w-100 main-content align-self-start">
+    <div class="empty-2"></div>
+    </div>
+
+    <div class="align-self-start p-3 w-25">
+        <h3 class="text-center">Friends List</h3>
+   </div>
 </div>
 
 </body>

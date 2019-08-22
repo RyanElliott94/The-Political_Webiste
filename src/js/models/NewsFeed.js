@@ -8,7 +8,7 @@ export async function getNewsStories() {
        .search('politics')
        .then(response => {
         resItems = Array.from(response);
-        resItems.length = 7;
+        resItems.length = 8;
        });
     return resItems;
 }

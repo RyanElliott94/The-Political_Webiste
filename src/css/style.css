@@ -15,14 +15,45 @@ html {
 	height: 100%;
 }
 
+.hide-home {
+	display: none !important;
+} 
+
 .d-flex {
 background-color: whitesmoke;
+height: 100%;
+width: 70%;
+}
+
+.hide {
+	display: none;
+}
+
+.form, .results{ 
+	width: 25%;
+}
+
+.search-users {
+	height: 30px;
+}
+
+.top-profile-content {
+	position: relative;
+}
+
+.view-profile-pic-src, .profile-pic-src {
+    position: absolute;
+    top: 10%;
 }
 
 .newPostContainer{
 	color:whitesmoke;
 	background-color: #363A47;
 }
+
+/* .loginContainer {
+height: 35%;
+} */
 
 .btn-new-post {
 	/* background: whitesmoke; */
@@ -94,28 +125,73 @@ display: none;
 
 .userPhoto, .view-userPhoto {
 	object-fit: cover;
-	width: 70px;
-	height: 70px;
+	width: 60px;
+	height: 60px;
+}
+
+.postDate {
+	color: rgb(167, 167, 167);
+	font-size: 12px;
+}
+
+.card-title {
+	text-decoration: underline;
+	font-size: 16px;
+}
+
+.options-text {
+	font-size: 20px;
+}
+
+.error {
+	color: white;
+	background: #f74848;
+}
+
+.friendsPhoto {
+	object-fit: cover;
+	width: 50px;
+	height: 50px;
 }
 
 .profile-content {
-	width: 70%;
+	width: 65%;
 }
 
 .profile-picture {
 	width: 50%;
 }
-.upload-btn {
-	position: absolute;
-	left: 34%;
-	top: 37.5%;
+
+.visible {
+	display: block;
+}
+
+.invisble {
+	display: none;
 }
 
 .results {
 	position: absolute;
+	width: 20%;
 	z-index: 1;
 }
 
+.online {
+	color:rgb(64, 202, 64);
+}
+
+.offline {
+	color:rgb(221, 74, 74);
+}
+
+.friend-sect, .friend-item {
+	margin: 0;
+	width: 35%;
+}
+
+.friend-item{
+	width: 80%;
+}
 /* .nav-link, .navbar-brand, a{
 	color: white;
 }

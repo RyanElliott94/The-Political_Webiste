@@ -6,14 +6,15 @@
         emailTextbox: $("#emailLab"),
         passTextbox: $("#passLab"),
         loginBtn: $(".btn-login"),
-        RememberMe: $(".remBox")
+        RememberMe: $(".remBox"),
+        errorAlert: $(".alert")
     }
     const getCheckboxState = () => {
         let isChecked = Elements.RememberMe.is(":checked");
         if(isChecked === true){
-            isChecked = firebase.sessPers;
+            isChecked = firebase.localPers;
         }else{
-            isChecked = firebase.noPers;
+            isChecked = firebase.sessPers;
         }
         return isChecked;
     }
@@ -30,10 +31,25 @@
                     console.log(error);
                     switch(error.code){
                         case "auth/invalid-email":
+                                Elements.errorAlert.css({
+                                    display: "block"
+                                });
+                                Elements.errorAlert.toggleClass(".error");
+                                Elements.errorAlert.text("Sorry, This Email-Address is not valid! Please try again.");
                         break;
                         case "auth/user-not-found":
+                                Elements.errorAlert.css({
+                                    display: "block"
+                                });
+                                Elements.errorAlert.toggleClass(".error");
+                                Elements.errorAlert.text("Sorry, I don't seem to be able to find you! Please try again.");
                         break;
                         case "auth/wrong-password":
+                                Elements.errorAlert.css({
+                                    display: "block"
+                                });
+                                Elements.errorAlert.toggleClass(".error");
+                                Elements.errorAlert.text("Sorry, That password doesn't quite match! Please try again.");
                         break;
                     }
                 });

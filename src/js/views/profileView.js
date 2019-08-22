@@ -3,7 +3,7 @@
     import * as app from "../models/Firebase";
     import "firebase/auth";
     var uniqid = require('uniqid');
-    import {getTempCoverPic} from "../index";
+    import {getDefaultProPic} from "../index";
 
     // TODO: PUSH USER DETAILS TO DATABASE WHEN UPLOADING THE PROFILE PICTURE. NOT WHEN REGISTERING IS COMEPLETE!!!
     export const ProfileElements = {
@@ -17,100 +17,105 @@
         updateUsername: $(".setUsername"),
         updateBio: $(".setBio"),
         updateLinks: $(".setLinks"),
+        updateLinkName: $(".setLinkName"),
         editProfileBtn: $(".edit-profile"),
-        confirmEditBtn: $(".confirm-edit"),
+        confirmEditBtn: $(".c-edit"),
         bioDesc: $(".bio-desc"),
         userName: $(".username"),
-        links: $(".links"),
-        viewProfile: $(".view-user")
+        linkName: $(".link-name"),
+        linkURL: $(".open-link"),
+        viewProfile: $(".view-user"),
+        coverPicProBar: $(".cover-progress"),
+        profilePicProBar: $(".profile-progress")
     };
 
     export const setMyUser = (user) => {
-        // getMyPosts(user);
+        app.setOnline(user);
+        getDefaultProPic();
         app.fetchCoverPhoto(user, ProfileElements.coverPhotoSrc);
         app.fetchProfilePicture(user, ProfileElements.profilePicSrc);
+        app.getMyPosts(user, ".empty-1");
+        app.viewFriends(user, ".friend-sect");
         }
-
-        const getMyPosts = (user) => {
-            app.FirebaseElements.getPostsRef(user).once('value', function(snapshot) {
-                snapshot.forEach(function(childData) {
-                  var postData = childData.val();
-                  var postHTML = `<div class="card border my-3 mx-auto w-50 clearfix" id="${uniqid()}">
-                  <div class="card-header">
-                  <img src="${postData.photoThumb}" alt="" class="userPhoto rounded-circle img img-thumbnail float-left mr-2">
-                  <p class="username w-0 mt-1">${postData.displayName}</p></div>
-                <div class="card-body text-dark">
-                  <p class="card-text postText">${postData.postBody}</p>
-                </div>`;
-                  const item = document.querySelector(".empty-1")
-                  item.insertAdjacentHTML('afterend', postHTML);
-                });
-              });
-            }
 
     $(document).ready(()=> {
     $(ProfileElements.uploadCoverPhoto).on("click", () => {
             ProfileElements.chooseCoverPic.focus().trigger('click');
         ProfileElements.chooseCoverPic.on('change',(evt) => {
             let res = evt.target.files[0];
+            ProfileElements.coverPicProBar.css({display: "block"});
             uploadPhoto(res, "coverPic");
         });
     });
-
-    // KEEP FOR FUTURE REFERENCE!!
-    // ProfileElements.viewProfile.on("click", () => {
-    //     var url = 'http://localhost:8080/view-profile.html?id=TPtJN31snCX3BKFJYMSYcsxirAs2';
-    //     window.location.href = url;
-    // });
 
     $(ProfileElements.uploadProfilePic).on("click", () => {
         ProfileElements.chooseProfilePic.focus().trigger('click');
     ProfileElements.chooseProfilePic.on('change',(evt) => {
         let res = evt.target.files[0];
-        uploadPhoto(res, "profilePic");
+        ProfileElements.profilePicProBar.css({display: "block"});
+        uploadPhoto(res, "profilePic", evt.target.files[0].type);
     });
     });
 
 
     ProfileElements.editProfileBtn.on("click", () => {
         ProfileElements.toggleEditMode.toggle(1000, () => {
-            ProfileElements.confirmEditBtn.toggleClass("confirm-edit");
-            ProfileElements.editProfileBtn.css({display: "none"});
-
-            ProfileElements.confirmEditBtn.on("click", () => {
-                if(ProfileElements.updateBio.val()){
-                    app.setUserBio(app.getUserInfo().currentUser, ProfileElements.updateBio.val());
-                }else{
-                    ProfileElements.toggleEditMode.toggle();
-                    ProfileElements.confirmEditBtn.toggleClass("confirm-edit");
-                }
-                if(ProfileElements.updateUsername.val()){
-                    app.setUsername(app.getUserInfo().currentUser, ProfileElements.updateUsername.val());
-                }else{
-                    ProfileElements.toggleEditMode.toggle();
-                    ProfileElements.confirmEditBtn.toggleClass("confirm-edit");
-                }
-                if(ProfileElements.updateLinks.val()){
-                    app.setLinks(app.getUserInfo().currentUser, ProfileElements.updateLinks.val());
-                }else{
-                    ProfileElements.toggleEditMode.toggle();
-                    ProfileElements.confirmEditBtn.toggleClass("confirm-edit");
-                }
-            });
+            hideElements(ProfileElements.editProfileBtn);
+            hideElements(ProfileElements.bioDesc);
+            hideElements(ProfileElements.userName);
+            hideElements(ProfileElements.links);
+            showElements(ProfileElements.confirmEditBtn);
         });
     });
 
+    ProfileElements.confirmEditBtn.on("click", () => {
+        if(!ProfileElements.updateBio.val() && !ProfileElements.updateUsername.val() && !ProfileElements.updateLinks.val()){
+            ProfileElements.toggleEditMode.toggleClass();
+            hideElements(ProfileElements.confirmEditBtn);
+        }
+        if(ProfileElements.updateBio.val()){
+            app.setUserBio(app.getUserInfo().currentUser, ProfileElements.updateBio.val());
+        }
+        if(ProfileElements.updateUsername.val()){
+            app.setUsername(app.getUserInfo().currentUser, ProfileElements.updateUsername.val());
+        }
+        if(ProfileElements.updateLinks.val()){
+            app.setLinks(app.getUserInfo().currentUser, ProfileElements.updateLinks.val(), ProfileElements.updateLinkName.val());
+        }
+
+        ProfileElements.toggleEditMode.toggle(1000, () => {
+        showElements(ProfileElements.editProfileBtn);
+        showElements(ProfileElements.bioDesc);
+        showElements(ProfileElements.userName);
+        showElements(ProfileElements.links);
+        hideElements(ProfileElements.confirmEditBtn);
+
+        });
+    });
 
     });
     
-    const uploadPhoto = (file, type) => {
+    const hideElements = ele => {
+        $(ele).css({display: "none"});
+    }
+
+    const showElements = ele => {
+        $(ele).css({display: "block"});
+    }
+
+    const uploadPhoto = (file, type, fileType) => {
         const metadata = {
-            contentType: 'image/jpg'
+            contentType: fileType
         };
-        let uploadProfile = app.uploadProfilePicture(file, app.getUserInfo().currentUser.uid, metadata, type)
+        let uploadProfile = app.uploadPicture(file, app.getUserInfo().currentUser.uid, metadata, type)
         uploadProfile.on(app.getUploadStateChanged(),
             (snapshot) => {
                 let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                if(type === "profilePic"){
+                    ProfileElements.profilePicProBar.text(`${Math.round(progress)}%`);
+                }else if(type === "coverPic"){
+                    ProfileElements.coverPicProBar.text(`${Math.round(progress)}%`);
+                }
             },
             (error) => {
                 switch (error.code) {
@@ -122,10 +127,12 @@
             }, () => {
                 uploadProfile.snapshot.ref.getDownloadURL().then((downloadURL) => {
                     if(type === "profilePic"){
+                        ProfileElements.profilePicProBar.css({display: "none"});
                         app.updateProfilePicture(downloadURL);
                         app.setProfilePhoto(app.getUserInfo().currentUser, downloadURL);
                         ProfileElements.profilePicSrc.attr("src", downloadURL);
                     }else if(type === "coverPic"){
+                        ProfileElements.coverPicProBar.css({display: "none"});
                         ProfileElements.coverPhotoSrc.attr("src", downloadURL);
                         app.setCoverPhoto(app.getUserInfo().currentUser, downloadURL);
                     }

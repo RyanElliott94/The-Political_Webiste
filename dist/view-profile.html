@@ -32,27 +32,35 @@
 </div>
 </nav>
 
-<div class="d-flex mx-auto profile-content shadow-sm">
-    <section class="profile-picture h-25">
-        <div class="media">
-            <div class="media-body ml-5">
-                <img src="" alt="" class="view-profile-pic-src ml-3 rounded-circle clearfix">
-          <h5 class="card-title">Username</h5>
-                <p class="view-username"></p>
-        
-                <h5 class="card-title">Bio</h5>
-                <p class="view-bio-desc"></p>
-        
-                <h5 class="card-title">Links</h5>
-                <p class="view-links"></p>
-            </div>
-          </div>
-  </section>
-    <section class="main-profile-content">
-                <img class="view-cover-pic-src float-right mb-5 mx-0 p-0" alt="">
-                <hr>
-                <div class="empty-1"></div>
-    </section>
+<section class="d-flex flex-nowrap top-profile-content align-self-start w-75 mx-auto">
+    <img class="view-cover-pic-src float-right mb-2 mx-0 p-0" alt="">
+    <img src="" alt="" class="view-profile-pic-src ml-4 rounded-circle clearfix">
+</section>
+
+<div class="d-flex flex-nowrap mx-5 w-75 mx-auto">
+    <div class="shortInfo p-3 w-25 align-self-start">
+        <h5 class="card-title">Username</h5>
+        <input type="text" autocomplete="name" class="form-control edit-mode setUsername">
+        <p class="view-username"></p>
+
+        <h5 class="card-title">Bio</h5>
+        <input type="text" autocomplete="name" class="form-control edit-mode setBio">
+        <p class="view-bio-desc"></p>
+
+        <h5 class="card-title">Links</h5>
+        <input type="text" autocomplete="name" class="form-control edit-mode setLinks">
+        <p class="view-links"></p>
+
+        <button class="btn mt-1 btn btn-outline-dark add-friend">Add as friend</button>
+    </div>
+
+    <div class="border-left border-right mx-3 p-3 w-100 main-content align-self-start">
+    <div class="empty-2"></div>
+    </div>
+
+    <div class="align-self-start p-3 w-25">
+        <h3 class="text-center">Friends List</h3>
+   </div>
 </div>
 
 <script type="text/javascript" src="js/bundle.js"></script></body>

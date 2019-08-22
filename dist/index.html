@@ -8,7 +8,7 @@
 
 </head>
 <body>
-		<nav class="navbar navbar-light navbar-expand-sm">
+		<nav class="navbar navbar-light navbar-expand-sm shadow-sm">
   <button class="navbar-toggler  ml-auto" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -26,7 +26,7 @@
     </ul>
   </div>
   <form class="form w-25 clearfix">
-    <input class="form-control search-users" type="text" id="searchResults" placeholder="Search Users" aria-label="Search Users">
+    <input class="form-control search-users" type="text" id="searchResults" placeholder="Find Someone" aria-label="Find Someone">
     <div class="results bg-white w-25 rounded-sm">
         
         </div>
@@ -40,27 +40,50 @@
 </div>
 </nav>
 
-<div class="d-flex flex-nowrap justify-content-between mx-5 w-75 mx-auto">
+<div class="d-flex shadow-sm flex-nowrap mx-5 mx-auto">
+  <!-- FIRST SECTION! -->
     <div class="p-3 w-50 align-self-start hashtagPanel">
       <h3 class="text-center">Hashtags</h3>
     </div>
 
-    <div class="border-left border-right mx-3 p-3 w-100 main-content align-self-start">
-        <h3 class="text-center">News Feed</h3>
-
-        <div class="d-flex justify-content-center rounded-lg newPostContainer w-100 mx-auto p-4 clearfix">
-            <div class="form-group">
-                <div class="userInfo clearfix">
-                    <img src="" alt="" class="userPhoto rounded-circle img img-thumbnail float-left mb-3 mr-2">
-                    <p class="username w-0 mt-1"></p>
-                  </div>
-                <textarea class="form-control postBox p-2 mx-auto"  style="min-width: 100px;width:600px;" spellcheck="value" id="inputMessage" placeholder="Write a new post!"></textarea>
-                <button type="button" class="btn btn-new-post mt-2 btn-outline-light float-right">Submit</button>
-                </div>
+    <!-- MIDDLE SECTION!  -->
+        <div class="border-left border-right mx-3 p-3 w-100 bg-white main-content align-self-start">
+            <h3 class="text-center">News Feed</h3>
+    
+            <div class="d-flex justify-content-center rounded-lg newPostContainer w-100 mx-auto p-4 clearfix">
+                <div class="form-group">
+                    <div class="userInfo clearfix">
+                        <img src="" alt="" class="userPhoto rounded-circle img img-thumbnail float-left mb-3 mr-2">
+                        <p class="username w-0 mt-1"></p>
+                      </div>
+                    <textarea class="form-control postBox p-2 mx-auto"  style="min-width: 100px;width:600px;" spellcheck="value" id="inputMessage" placeholder="Write a new post!"></textarea>
+                    <button type="button" class="btn btn-new-post mt-2 btn-outline-light float-right">Submit</button>
+                    </div>
+            </div>
+    <hr>
+    <ul class="nav nav-tabs nav-fill" id="homeTabs" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link fade show active" id="myposts-tab" data-toggle="tab" href="#myPosts" role="tab" aria-controls="myposts" aria-selected="true">My Posts</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="friendpost-tab" data-toggle="tab" href="#friendsPosts" role="tab" aria-controls="friendpost" aria-selected="false">Friends Posts</a>
+      </li>
+    </ul>
+    
+    <div class="tab-content">
+      <div class="tab-pane fade active" id="myPosts" role="tabpanel" aria-labelledby="myposts-tab">
+        <div class="empty-1" id="postItems">
+    
         </div>
-<hr>
-<div class="empty-0" id="postItems"></div>
-          </div>
+              </div>
+      <div class="tab-pane" id="friendsPosts" role="tabpanel" aria-labelledby="friendpost-tab">
+        <div class="empty-0" id="postItems">
+          
+        </div>
+              </div>
+      </div>
+    </div>
+
      <!-- NEWS FEED! -->
       <div class="align-self-start p-3 w-50">
           <h3 class="text-center topStories">Top Stories</h3>

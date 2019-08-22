@@ -7,14 +7,20 @@ const Elements = {
             coverPic: $(".view-cover-pic-src"),
             username: $(".view-username"),
             bioView: $(".view-bio-desc"),
-            links: $(".view-links")
+            links: $(".view-links"),
+            addFriend: $(".add-friend")
         }
 
         var url = window.location.href;
         var id = url.substring(url.lastIndexOf('=') + 1);
 
         $(document).ready(() => {
+            app.getOtherUsersPosts(id, ".empty-2");
             viewProfileInfo(id);
+        });
+
+        Elements.addFriend.on("click", () => {
+            app.addAsFriend(id);
         });
 
         const viewProfileInfo = (id) => {
