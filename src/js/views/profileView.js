@@ -34,7 +34,7 @@
         getDefaultProPic();
         app.fetchCoverPhoto(user, ProfileElements.coverPhotoSrc);
         app.fetchProfilePicture(user, ProfileElements.profilePicSrc);
-        app.getMyPosts(user, ".empty-1");
+        // app.getMyPosts(user, ".empty-1");
         app.viewFriends(user, ".friend-sect");
         }
 

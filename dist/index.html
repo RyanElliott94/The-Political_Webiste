@@ -8,46 +8,73 @@
 
 </head>
 <body>
-		<nav class="navbar navbar-light navbar-expand-sm shadow-sm">
-  <button class="navbar-toggler  ml-auto" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="container p-0">
-      <a class="navbar-brand" href="#">
-          <img  width="30" height="30" class="d-inline-block align-top nav" alt="">
-          The Political
-        </a>
-        
-  <div class="collapse navbar-collapse w-auto" id="navbarNav">
-    <ul class="navbar-nav">
-      <li class="nav-item text-center">
-        <a class="nav-link" href="index.html">Home</a>
-      </li>
-    </ul>
-  </div>
-  <form class="form w-25 clearfix">
-    <input class="form-control search-users" type="text" id="searchResults" placeholder="Find Someone" aria-label="Find Someone">
-    <div class="results bg-white w-25 rounded-sm">
-        
+		<nav class="navbar navbar-light p-1 navbar-expand-sm shadow-sm">
+        <button class="navbar-toggler  ml-auto" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="d-flex mx-auto p-0">
+            <a class="navbar-brand align-self-center p-0" href="index.html">
+                <img  width="30" height="30" class="d-inline-block align-top nav" alt="">
+                The Political
+              </a>
+              
+        <div class="collapse navbar-collapse p-0" id="navbarNav">
+          <ul class="navbar-nav p-0">
+            <li class="nav-item align-self-center text-center">
+              <a class="nav-link p-0" href="index.html">Home</a>
+            </li>
+            <ul class="navbar-nav">
+                <li class="nav-item logged-out text-center">
+                  <a class="nav-link p-0 ml-2" href="./profile.html">My Profile</a>
+                </li>
+                </ul>
+          </ul>
         </div>
-  </form>
-  <form class="form-inline navbar-login navbar-light">
-  <button type="button" class="btn btn-sm m-2 bg-transparent logged-out" id="nav-logout">Log Out</button>
-  <a href="./profile.html"><button type="button" class="btn btn-sm m-2 bg-transparent logged-out" id="nav-profile">Profile</button></a>
-  <a href="./register.html"><button type="button" class="btn btn-sm m-2 bg-transparent logged-in" id="nav-signup">Register</button></a>
-  <a href="./login.html"><button type="button" class="btn btn-sm m-2 bg-transparent logged-in" id="nav-login">Log In</button></a>
-  </form>
-</div>
-</nav>
 
-<div class="d-flex shadow-sm flex-nowrap mx-5 mx-auto">
+        <form class="form">
+            <input class="form-control search-users rounded-pill p-2" type="text" id="searchResults" placeholder="Find Someone" aria-label="Find Someone">
+            <div class="results bg-white ml-2 mt-1 rounded-lg">
+              </div>
+        </form>
+
+        <form class="form-inline navbar-login navbar-light">
+        <button type="button" class="btn btn-sm  bg-transparent logged-out align-self-center" id="nav-logout">Log Out</button>
+      
+        <a href="./register.html"><button type="button" class="btn btn-sm m-2 bg-transparent logged-in" id="nav-signup">Register</button></a>
+        <a href="./login.html"><button type="button" class="btn btn-sm m-2 bg-transparent logged-in" id="nav-login">Log In</button></a>
+        </form>
+      </div>
+      </nav>
+
+      <div class="no-user hide bg-light p-3 rounded-lg mt-5 shadow-lg align-self-start mx-auto w-50">
+          <form>
+              <div class="form-group">
+                <label for="emailLab">Email address</label>
+                <input type="email" autocomplete="email" class="form-control" id="emailLab" aria-describedby="emailHelp" placeholder="Enter email">
+                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+              </div>
+              <div class="form-group">
+                <label for="passLab">Password</label>
+                <input type="password" autocomplete="current-password" class="form-control" id="passLab" placeholder="Password">
+              </div>
+              <div class="form-group form-check">
+                  <input type="checkbox" class="form-check-input remBox" id="exampleCheck1">
+                  <label class="form-check-label" for="exampleCheck1">Remember Me</label>
+                </div>
+              <button type="button" class="btn btn-outline-dark rounded-lg btn-login">Login</button>
+      
+              <div class="alert fade show error mt-2" style="display: none"></div>
+            </form>
+  </div>
+
+<div class="d-flex hide-home home-page shadow-sm flex-nowrap mx-5 h-auto mx-auto">
   <!-- FIRST SECTION! -->
     <div class="p-3 w-50 align-self-start hashtagPanel">
       <h3 class="text-center">Hashtags</h3>
     </div>
 
     <!-- MIDDLE SECTION!  -->
-        <div class="border-left border-right mx-3 p-3 w-100 bg-white main-content align-self-start">
+        <div class="border-left border-right border-bottom rounded-sm mx-3 p-3 w-100 bg-white main-content align-self-start">
             <h3 class="text-center">News Feed</h3>
     
             <div class="d-flex justify-content-center rounded-lg newPostContainer w-100 mx-auto p-4 clearfix">

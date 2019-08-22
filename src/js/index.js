@@ -61,8 +61,8 @@ Elements.navLogout.on("click", () => {
 
 Elements.newPostBtn.on("click", () => {
 firebase.addNewPost(firebase.getUserInfo().currentUser, Elements.postText.val(), Elements.username.text());
-removeItems(".card");
-firebase.getMyPosts(firebase.getUserInfo().currentUser);
+// removeItems(".card");
+// firebase.getMyPosts(firebase.getUserInfo().currentUser);
 });
 
 Elements.searchUsers.on("keydown", (key) => {
