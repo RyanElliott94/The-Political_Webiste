@@ -44,7 +44,7 @@
         ProfileElements.chooseCoverPic.on('change',(evt) => {
             let res = evt.target.files[0];
             ProfileElements.coverPicProBar.css({display: "block"});
-            uploadPhoto(res, "coverPic");
+            uploadPhoto(res, "coverPic", evt.target.files[0].type);
         });
     });
 
@@ -52,6 +52,7 @@
         ProfileElements.chooseProfilePic.focus().trigger('click');
     ProfileElements.chooseProfilePic.on('change',(evt) => {
         let res = evt.target.files[0];
+        
         ProfileElements.profilePicProBar.css({display: "block"});
         uploadPhoto(res, "profilePic", evt.target.files[0].type);
     });
@@ -127,6 +128,12 @@
             }, () => {
                 uploadProfile.snapshot.ref.getDownloadURL().then((downloadURL) => {
                     if(type === "profilePic"){
+                        var oldURL = $(".profile-pic-src").attr("src");
+                        var newUrl = new URL(oldURL);
+                        var url = newUrl.pathname;
+                        var filename = url.substring(url.lastIndexOf('F') + 1);
+                        app.deleteOldDP(filename);
+
                         ProfileElements.profilePicProBar.css({display: "none"});
                         app.updateProfilePicture(downloadURL);
                         app.setProfilePhoto(app.getUserInfo().currentUser, downloadURL);

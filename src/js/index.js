@@ -9,6 +9,10 @@ import "bootstrap";
 import navIcon from '../imgs/logo.png';
 import tempCoverPic from '../imgs/dummy-new-0.jpg';
 import defaultProfilePic from "../imgs/logo.png";
+import '@fortawesome/fontawesome-free/js/fontawesome'
+import '@fortawesome/fontawesome-free/js/solid'
+import '@fortawesome/fontawesome-free/js/regular'
+import '@fortawesome/fontawesome-free/js/brands'
 
 const Elements = {
     topStories: document.querySelector(".topStories"),
@@ -20,7 +24,11 @@ const Elements = {
     userThumb: $(".userPhoto"),
     searchUsers: $(".search-users"),
     searchResults: document.querySelector(".results"),
-    navLinks: $(".nav-link")
+    navLinks: $(".nav-link"),
+    choosePostPic: $("#add-pic-to-post"),
+    addPostPic: $(".add-post-pic"),
+    choosePostVid: $("#add-vid-to-post"),
+    addPostVid: $(".add-post-video")
 }
 
 const item = document.querySelector(".empty-0")
@@ -39,6 +47,23 @@ export const setHomeUser = (user) => {
   firebase.getFriendsPosts(user, ".empty-0");
   firebase.fetchProfilePictureThumb(user, Elements.userThumb);
   }
+
+  $(Elements.choosePostPic).on("click", () => {
+    Elements.addPostPic.focus().trigger('click');
+Elements.addPostPic.on('change',(evt) => {
+    let res = evt.target.files[0];
+    uploadFile(res, "post-img", evt.target.files[0].type);
+});
+});
+
+$(Elements.choosePostVid).on("click", () => {
+  Elements.addPostVid.focus().trigger('click');
+Elements.addPostVid.on('change',(evt) => {
+  let res = evt.target.files[0];
+  $(".pre-post-vid").css({display:"block"});
+  uploadFile(res, "post-vid", evt.target.files[0].type);
+});
+});
 
     $(Elements.navLinks).click(function(){
       var id = $(this).attr('id');
@@ -60,9 +85,18 @@ Elements.navLogout.on("click", () => {
 });
 
 Elements.newPostBtn.on("click", () => {
-firebase.addNewPost(firebase.getUserInfo().currentUser, Elements.postText.val(), Elements.username.text());
+  var imgUrl = $(".pre-post-img").attr("src");
+  var vidUrl = $(".pre-post-vid").attr("src");
+firebase.addNewPost(firebase.getUserInfo().currentUser, Elements.postText.val(), Elements.username.text(), imgUrl, vidUrl);
+$(".pre-post-vid").css({display:"none"});
+Elements.postText.val("");
 // removeItems(".card");
 // firebase.getMyPosts(firebase.getUserInfo().currentUser);
+});
+
+$(".post-img").on("click", () => {
+  $(".image-pop").modal("show");
+  $(".view-image").attr("src", $(".post-img").attr("src"));
 });
 
 Elements.searchUsers.on("keydown", (key) => {
@@ -111,6 +145,34 @@ const viewSearchResults = (userPhoto, username, userID) => {
   </div>`;
   Elements.searchResults.insertAdjacentHTML('beforeend', resultItem);
 }
+
+const uploadFile = (file, type, fileType) => {
+  const metadata = {
+      contentType: fileType
+  };
+  let uploadProfile = firebase.uploadPicture(file, firebase.getUserInfo().currentUser.uid, metadata, type)
+  uploadProfile.on(firebase.getUploadStateChanged(),
+      (snapshot) => {
+          let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100; 
+      },
+      (error) => {
+          switch (error.code) {
+              case 'storage/unauthorized':
+                  break;
+              case 'storage/unknown':
+                  break;
+          }
+      }, () => {
+          uploadProfile.snapshot.ref.getDownloadURL().then((downloadURL) => {
+            if(type === "post-vid"){
+              $(".pre-post-vid").attr("src", downloadURL);
+            }else{
+              $(".pre-post-img").attr("src", downloadURL);
+            }
+              });
+      });
+}
+
 const setupImgs = () => {
     // NavBar Icon!!
     Elements.navImg.src = navIcon;

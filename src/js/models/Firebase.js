@@ -8,6 +8,7 @@ require("firebase/storage");
 import {ProfileElements, setMyUser} from "../views/profileView";
 import {setHomeUser} from "../index";
 import{ getDefaultProPic} from "../index";
+import PostHTML from "./PostHTML";
 var uniqid = require('uniqid');
 initFirebase();
 
@@ -32,7 +33,8 @@ export const setUserInfo = (user) => {
 
 firebase.auth().onAuthStateChanged(user => {
     if(user){
-        listenForPosts(user);
+        listenForNewPosts(user);
+        listenForRemovedPosts(user);
         setHomeUser(user);
         setMyUser(user);
         setUserInfo(user);
@@ -46,31 +48,39 @@ firebase.auth().onAuthStateChanged(user => {
     }
 });
 
-const listenForPosts = user => {
+const listenForNewPosts = user => {
     FirebaseElements.getMyPostsRef(user).on('child_added', function(snapshot) {
         var postData = snapshot.val();
-        var postHTML = `<div class="card border-0 rounded-lg my-3 mx-auto myPostCards" id="${postData.postID}">
-        <div class="card-header pb-0 border-0 bg-white">
-        <img src="${postData.photoThumb}" alt="" class="userPhoto rounded-circle img img-thumbnail float-left mr-2">
-        <p class="username w-0 mt-1 mb-0">${postData.displayName}</p>
-        <p class="postDate w-auto mt-0">${moment(postData.addedAt).fromNow()}</p>
-        </div>
-        <hr class="mx-auto" style="width:90%">
-      <div class="card-body pt-0 px-4 text-dark border-0">
-        <p class="card-text postText">${postData.postBody}</p>
-      </div>`;
+        var postID = snapshot.key;
+        var html = new PostHTML(postID, postData.photoThumb, postData.addedAt, postData.postBody, postData.displayName, postData.postIMG, postData.postVid);
+        addPostToAllPosts(user, postData.postBody, postData.displayName, postID, postData.postIMG, postData.postVid);
         const item = document.querySelector(".empty-1");
         if(item){
-          item.insertAdjacentHTML('beforeend', postHTML);
+          item.insertAdjacentHTML('beforeend', html.getHTML());
+        }
+    });
+}
+
+const listenForRemovedPosts = user => {
+    FirebaseElements.getMyPostsRef(firebase.auth().currentUser).on('child_removed', function(snapshot) {
+        var postID = snapshot.key;
+        const item = $(`#${postID}`);
+        if(item){
+          item.remove();
         }
     });
 }
 
 export const FirebaseElements = {
     coverPicRef: firebase.storage().ref('coverPictures/'),
+    postPicRef: firebase.storage().ref('postPictures/'),
+    postVidRef: firebase.storage().ref('postVideos/'),
     profilePicRef: firebase.storage().ref('profilePictures/'),
     allUsers: firebase.database().ref('/users/'),
-    allPosts: firebase.database().ref('/posts/'),
+    allPosts: firebase.database().ref(`/posts/`),
+    allPostsByID: postID => {
+        return firebase.database().ref(`/posts/${postID}`)
+    },
     userRef: (user) => {
         return firebase.database().ref(`/users/${user.uid}/`)
     },
@@ -83,6 +93,12 @@ export const FirebaseElements = {
     getMyPostsRef: user => {
         return firebase.database().ref(`/users/${user.uid}/posts/`)
     },
+    newPostRef: (user, id) => {
+        return firebase.database().ref(`/users/${user.uid}/posts/${id}`)
+    },
+    deletePostRef: (user, postID) => {
+        return firebase.database().ref(`/users/${user.uid}/posts/${postID}`)
+    },
     otherUser: userID => {
         return firebase.database().ref(`/users/${userID}/`)
     },
@@ -90,6 +106,10 @@ export const FirebaseElements = {
         return firebase.database().ref(`/users/${userID}/posts/`)
     }
 };
+
+const getPosts = (userID) => {
+
+}
 
 export const fetchProfilePicture = (user, element) => {
     if(user.photoURL){
@@ -187,6 +207,10 @@ export const uploadPicture = (file, userID, meta, type) => {
         return FirebaseElements.profilePicRef.child(`avi-img-${uniqid()}`).put(file, meta);
     }else if(type === "coverPic"){
         return FirebaseElements.coverPicRef.child(userID).put(file, meta);
+    }else if(type === "post-img"){
+        return FirebaseElements.postPicRef.child(`post-img-${uniqid()}`).put(file, meta);
+    }else if(type === "post-vid"){
+        return FirebaseElements.postVidRef.child(`post-vid-${uniqid()}`).put(file, meta);
     }
 }
 
@@ -287,25 +311,31 @@ export const getProfileInfoFromDB = user => {
 // }
 //////////////////////////////////////////////////////
 
-export const addNewPost = (user, postText, username, type) => {
-    FirebaseElements.getMyPostsRef(user).push().set({
+export const addNewPost = (user, postText, username, imgURL, vidURL) => {
+    let ranID = uniqid();
+    FirebaseElements.newPostRef(user, ranID).set({
     displayName: username,
     photoThumb: user.photoURL,
+    userID: user.uid,
     postBody: postText,
-    postID: uniqid(),
+    postIMG: imgURL,
+    postVid: vidURL,
     addedAt: getTimeStamp()
-}).then(() => {
-    FirebaseElements.allPosts.push().set({
-        userID: user.uid,
-        displayName: username,
-        photoThumb: user.photoURL,
-        postBody: postText,
-        addedAt: getTimeStamp()
-    });
 })
 .catch(error => {
     console.log(error.message);
 });
+}
+
+const addPostToAllPosts = (user, postText, username, id, imgURL, vidURL) => {
+    FirebaseElements.allPostsByID(id).set({
+        displayName: username,
+        photoThumb: user.photoURL,
+        userID: user.uid,
+        postBody: postText,
+        postIMG: imgURL,
+        postVid: vidURL
+     });
 }
 
 export const addAsFriend = userID => {
@@ -319,46 +349,79 @@ export const addAsFriend = userID => {
     });
 }
 
+export const removeFriend = userID => {
+    FirebaseElements.newFriendRef(firebase.auth().currentUser, userID).remove();
+}
+
+export const deletePost = (user, postID) => {
+       FirebaseElements.deletePostRef(user, postID).remove();
+       FirebaseElements.allPostsByID(postID).remove();
+}
+
+export const deletePostImage = (file) => {
+    firebase.storage().ref(`postPictures/${file}`).delete();
+}
+
+export const deletePostVideo = (file) => {
+    firebase.storage().ref(`postVideos/${file}`).delete();
+}
+
+export const deleteOldDP = (file) => {
+    firebase.storage().ref(`profilePictures/${file}`).delete();
+}
 
 export const getMyPosts = (user, ele) => {
     FirebaseElements.getMyPostsRef(user).once('value', function(snapshot) {
         snapshot.forEach(function(childData) {
           var postData = childData.val();
-          var postHTML = `<div class="card border-0 rounded-lg my-3 mx-auto myPostCards" id="${postData.postID}">
-          <div class="card-header pb-0 border-0 bg-white">
-          <img src="${postData.photoThumb}" alt="" class="userPhoto rounded-circle img img-thumbnail float-left mr-2">
-          <p class="username w-0 mt-1 mb-0">${postData.displayName}</p>
-          <p class="postDate w-auto mt-0">${moment(postData.addedAt).fromNow()}</p>
-          </div>
-          <hr class="mx-auto" style="width:90%">
-        <div class="card-body pt-0 px-4 text-dark border-0">
-          <p class="card-text postText">${postData.postBody}</p>
-        </div>`;
-          const item = document.querySelector(`${ele}`);
+          var postID = childData.key;
+          var html = new PostHTML(postID, postData.photoThumb, postData.addedAt, postData.postBody, postData.displayName, postData.postIMG, postData.postVid);
+          const item = document.querySelector(".empty-1");
           if(item){
-            item.insertAdjacentHTML('beforeend', postHTML);
+            item.insertAdjacentHTML('beforeend', html.getMyHTML());
           }
         });
       });
+
+      $(".close").on("click", () => {
+        var id = $(".myPostCards").attr("id");
+        var vidEle = $(".post-vid").attr("src");
+        var imgURL = $(".post-img").attr("src");
+        if(vidEle.includes("http")){
+            deleteFile("postVid");
+        }else if(imgURL.includes("http")){
+            deleteFile("postImg");
+        }
+
+        deletePost(firebase.auth().currentUser, id);
+      });
     }
 
-export const getOtherUsersPosts = (userID, ele) => {
+    const deleteFile = type => {
+        if(type === "postVid"){
+            var vidURL = $(".post-vid").attr("src");
+            var newVUrl = new URL(vidURL);
+            var url = newVUrl.pathname;
+            var vidName = url.substring(url.lastIndexOf('F') + 1);
+            deletePostVideo(vidName);
+        }else if(type === "postImg"){
+            var imgURL = $(".post-img").attr("src");
+            var newPUrl = new URL(imgURL);
+            var url = newPUrl.pathname;
+            var imgName = url.substring(url.lastIndexOf('F') + 1);
+            deletePostImage(imgName);
+        }
+    }
+
+export const getOtherUsersPosts = (userID) => {
         FirebaseElements.otherUsersPostsRef(userID).once('value', function(snapshot) {
             snapshot.forEach(function(childData) {
               var postData = childData.val();
-              var postHTML = `<div class="card border-0 rounded-lg my-3 mx-auto myPostCards" id="${postData.postID}">
-              <div class="card-header pb-0 border-0 bg-white">
-              <img src="${postData.photoThumb}" alt="" class="userPhoto rounded-circle img img-thumbnail float-left mr-2">
-              <p class="username w-0 mt-1 mb-0">${postData.displayName}</p>
-              <p class="postDate w-auto mt-0">${moment(postData.addedAt).fromNow()}</p>
-              </div>
-              <hr class="mx-auto" style="width:90%">
-            <div class="card-body pt-0 px-4 text-dark border-0">
-              <p class="card-text postText">${postData.postBody}</p>
-            </div>`;
-              const item = document.querySelector(`${ele}`);
+              var postID = childData.key;
+              var html = new PostHTML(postID, postData.photoThumb, postData.addedAt, postData.postBody, postData.displayName);
+              const item = document.querySelector(".empty-2");
               if(item){
-                item.insertAdjacentHTML('beforeend', postHTML);
+                item.insertAdjacentHTML('beforeend', html.getHTML());
               }
             });
           });
@@ -399,7 +462,8 @@ export const getOtherUsersPosts = (userID, ele) => {
     FirebaseElements.friendsRef(user).once("value", snapshot => {
         snapshot.forEach(dataChild => {
             var data = dataChild.val();
-            var url = `http://localhost:8080/view-profile.html?id=${data.userID}`;
+            var url = `http://localhost:8080/view-profile.html?id=${data.userID}&isFriend=true`;
+
             postHTML = `<div class="friend-item mx-auto rounded-lg bg-white clearfix mb-2" id="${data.userID}">
             <img src="${data.photoThumb}" alt="" class="img img-thumbnail float-left friendsPhoto rounded-circle friend-profile-pic-src m-2">
             <p class="friend-username mt-2 mb-0"><a href="${url}">${data.displayName}</a></p>

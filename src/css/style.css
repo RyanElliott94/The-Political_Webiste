@@ -46,24 +46,24 @@ width: 70%;
     top: 10%;
 }
 
-.newPostContainer{
+/* .newPostContainer{
 	color:whitesmoke;
 	background-color: #363A47;
-}
+} */
 
 /* .loginContainer {
 height: 35%;
 } */
 
-.btn-new-post {
-	/* background: whitesmoke; */
+/* .btn-new-post {
+	background: whitesmoke;
 	color:whitesmoke;
 }
 
 .btn-new-post:hover {
 	background: whitesmoke;
 	color:#363A47;
-}
+} */
 
 .navbar {
 	background-color: whitesmoke;
@@ -98,7 +98,7 @@ display: none;
 	display: block;
 }
 
-.choose-pro-pic, .choose-cover-pic {
+.choose-pro-pic, .choose-cover-pic, .add-post-pic, .add-post-video {
 	width: 0.1px;
 	height: 0.1px;
 	opacity: 0;
@@ -127,6 +127,10 @@ display: none;
 	object-fit: cover;
 	width: 60px;
 	height: 60px;
+}
+
+.post-img, .pre-post-img {
+	object-fit: cover;
 }
 
 .postDate {

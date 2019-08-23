@@ -11,16 +11,30 @@ const Elements = {
             addFriend: $(".add-friend")
         }
 
-        var url = window.location.href;
-        var id = url.substring(url.lastIndexOf('=') + 1);
+        var oldURL = window.location.href;
+        var newUrl = new URL(oldURL);
+
+        var isFriend = newUrl.searchParams.get("isFriend");
+        var userID = newUrl.searchParams.get("id");
+
+        const getFriendStatus = () => {
+            if(isFriend){
+                app.removeFriend(userID);
+            }else{
+                app.addAsFriend(userID);
+            }
+        }
 
         $(document).ready(() => {
-            app.getOtherUsersPosts(id, ".empty-2");
-            viewProfileInfo(id);
+            if(isFriend == "true"){
+                Elements.addFriend.text("Remove Friend");
+            }
+            app.getOtherUsersPosts(userID);
+            viewProfileInfo(userID);
         });
 
         Elements.addFriend.on("click", () => {
-            app.addAsFriend(id);
+            getFriendStatus();
         });
 
         const viewProfileInfo = (id) => {
