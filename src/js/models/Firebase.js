@@ -59,6 +59,7 @@ const listenForNewPosts = user => {
           item.insertAdjacentHTML('beforeend', html.getHTML());
         }
     });
+    setupClicks();
 }
 
 const listenForRemovedPosts = user => {
@@ -382,19 +383,7 @@ export const getMyPosts = (user, ele) => {
           }
         });
       });
-
-      $(".close").on("click", () => {
-        var id = $(".myPostCards").attr("id");
-        var vidEle = $(".post-vid").attr("src");
-        var imgURL = $(".post-img").attr("src");
-        if(vidEle.includes("http")){
-            deleteFile("postVid");
-        }else if(imgURL.includes("http")){
-            deleteFile("postImg");
-        }
-
-        deletePost(firebase.auth().currentUser, id);
-      });
+      setupClicks();
     }
 
     const deleteFile = type => {
@@ -435,21 +424,34 @@ export const getOtherUsersPosts = (userID) => {
                 FirebaseElements.allPosts.once("value", snap => {
                     snap.forEach(item => {
                         var postData = item.val();
+                        var data = postData.postVid;
+                        if(data){
+                            data = 'display:block;';
+                        }else{
+                            data = 'display:none;';
+                        }
+
                         if(friendData.userID === postData.userID){
-                            var postHTML = `<div class="card border-0 rounded-lg my-3 mx-auto">
+                            var postHTML = `<div class="card border-0 rounded-lg my-3 mx-auto myPostCards" id="${postData.postID}">
                             <div class="card-header pb-0 border-0 bg-white">
-                            <img src="${postData.photoThumb}" alt="" class="userPhoto rounded-circle img img-thumbnail float-left mr-2">
+                            <img src="${postData.photoThumb}" alt="" class="userPhoto rounded-circle img img-thumbnail float-left mr-2 mb-2">
                             <p class="username w-0 mt-1 mb-0">${postData.displayName}</p>
                             <p class="postDate w-auto mt-0">${moment(postData.addedAt).fromNow()}</p>
+                            <video controls src="${postData.postVid}" width="100%" height="300px" class="img post-vid rounded-lg mb-2" style="${data}"></video>
+                            <div class="post-pic">
+                            <img src="${postData.postIMG}" alt="" width="100%" height="250px" class="img post-img rounded-lg mb-2">
+                            </div>
                             </div>
                             <hr class="mx-auto" style="width:90%">
-                            <div class="card-body pt-0 px-4 text-dark border-0">
+                          <div class="card-body pt-0 pb-0 px-4 text-dark border-0">
                             <p class="card-text postText">${postData.postBody}</p>
-                            </div>`;
+                          </div>`;
                             const item = document.querySelector(`${ele}`);
                         if(postData){
                             item.insertAdjacentHTML('beforeend', postHTML);
                         }
+
+                        setupClicks();
                         }
                     });
                 });
@@ -475,6 +477,31 @@ export const getOtherUsersPosts = (userID) => {
         }
         });
     });
+    }
+
+    const setupClicks = () => {
+        $(".close").on( "click", function(event) {
+            var id = $(event.target).closest(".myPostCards").attr("id");
+    
+            var vidEle = $(".post-vid").attr("src");
+            var imgURL = $(".post-img").attr("src");
+            if(vidEle.includes("http")){
+                deleteFile("postVid");
+            }else if(imgURL.includes("http")){
+                deleteFile("postImg");
+            }
+                deletePost(firebase.auth().currentUser, id);
+            });
+    
+            $(".post-pic").on("click", function(event) {
+                var id = $(event.target).closest($(".post-img")).attr("src");
+                $(".image-pop").modal("show");
+                $(".view-image").attr("src", id);
+                });
+          
+          $('.image-pop').on('hidden.bs.modal', function () {
+            $(this).modal("dispose");
+          });
     }
 
 export const getUserInfo = () => {

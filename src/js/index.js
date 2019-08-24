@@ -28,7 +28,8 @@ const Elements = {
     choosePostPic: $("#add-pic-to-post"),
     addPostPic: $(".add-post-pic"),
     choosePostVid: $("#add-vid-to-post"),
-    addPostVid: $(".add-post-video")
+    addPostVid: $(".add-post-video"),
+    uploadProBar: $(".upload-progress")
 }
 
 const item = document.querySelector(".empty-0")
@@ -52,6 +53,7 @@ export const setHomeUser = (user) => {
     Elements.addPostPic.focus().trigger('click');
 Elements.addPostPic.on('change',(evt) => {
     let res = evt.target.files[0];
+    Elements.uploadProBar.css({display: "block"});
     uploadFile(res, "post-img", evt.target.files[0].type);
 });
 });
@@ -60,6 +62,7 @@ $(Elements.choosePostVid).on("click", () => {
   Elements.addPostVid.focus().trigger('click');
 Elements.addPostVid.on('change',(evt) => {
   let res = evt.target.files[0];
+  Elements.uploadProBar.css({display: "block"});
   $(".pre-post-vid").css({display:"block"});
   uploadFile(res, "post-vid", evt.target.files[0].type);
 });
@@ -74,10 +77,11 @@ Elements.addPostVid.on('change',(evt) => {
           break;
           case "friendpost-tab":
               removeItems(".card");
-              firebase.getFriendsPosts(firebase.getUserInfo().currentUser, ".empty-0");
+              // firebase.getFriendsPosts(firebase.getUserInfo().currentUser, ".empty-0");
             break;
       }
 });
+
 
 Elements.navLogout.on("click", () => {
   $(".home-page").addClass("hide-home");
@@ -89,15 +93,12 @@ Elements.newPostBtn.on("click", () => {
   var vidUrl = $(".pre-post-vid").attr("src");
 firebase.addNewPost(firebase.getUserInfo().currentUser, Elements.postText.val(), Elements.username.text(), imgUrl, vidUrl);
 $(".pre-post-vid").css({display:"none"});
+$(".pre-post-pic").css({display:"none"});
 Elements.postText.val("");
 // removeItems(".card");
 // firebase.getMyPosts(firebase.getUserInfo().currentUser);
 });
 
-$(".post-img").on("click", () => {
-  $(".image-pop").modal("show");
-  $(".view-image").attr("src", $(".post-img").attr("src"));
-});
 
 Elements.searchUsers.on("keydown", (key) => {
     if(key.keyCode === 13){
@@ -154,6 +155,11 @@ const uploadFile = (file, type, fileType) => {
   uploadProfile.on(firebase.getUploadStateChanged(),
       (snapshot) => {
           let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100; 
+          if(type === "post-vid"){
+            Elements.uploadProBar.text(`Uploading Video: ${Math.round(progress)}%`);
+          }else{
+            Elements.uploadProBar.text(`Uploading Image: ${Math.round(progress)}%`);
+          }
       },
       (error) => {
           switch (error.code) {
@@ -169,6 +175,7 @@ const uploadFile = (file, type, fileType) => {
             }else{
               $(".pre-post-img").attr("src", downloadURL);
             }
+            Elements.uploadProBar.css({display: "none"});
               });
       });
 }
