@@ -56,7 +56,7 @@ const listenForNewPosts = user => {
         addPostToAllPosts(user, postData.postBody, postData.displayName, postID, postData.postIMG, postData.postVid);
         const item = document.querySelector(".empty-1");
         if(item){
-          item.insertAdjacentHTML('beforeend', html.getHTML());
+          item.insertAdjacentHTML('beforeend', html.getMyHTML());
         }
     });
     setupClicks();

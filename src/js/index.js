@@ -13,6 +13,7 @@ import '@fortawesome/fontawesome-free/js/fontawesome'
 import '@fortawesome/fontawesome-free/js/solid'
 import '@fortawesome/fontawesome-free/js/regular'
 import '@fortawesome/fontawesome-free/js/brands'
+import { version } from "moment";
 
 const Elements = {
     topStories: document.querySelector(".topStories"),
@@ -118,18 +119,48 @@ Elements.searchUsers.on("keydown", (key) => {
     }
 });
 
+// Created my own news list. Only using FoxNews for now but It's far better than the previous Google RSS Feed!
+$(function () {
+  $.ajax({
+      type: 'GET',
+      url: 'https://www.foxnews.com/politics',
+      dataType: "html",
+      success: function (data) {
+        var article = $(data).find("article");
+        var artArray = Array.from(article);
+        artArray.length = 10;
+        artArray.forEach(item => {
+          var artTitle = $(item).find(".info .title").text();
+          var artLink = $(item).find(".info .title a").attr("href");
+          var artImage = $(item).find(".m a img").attr("src");
+          var artDesc = $(item).find(".info .content .dek a").text();
 
-newsFeed.getNewsStories().then(newsItems => {
-    newsItems.forEach(item => {
-        let artItem = `<div class="stories bg-white rounded-lg p-2 m-3">
-        <a href="${item.link}"><h5 class="articleTitle">${item.title}</h5></a>
-          <p class="articleDesc">${item.description}</p>
-        </div>`;
-        if(Elements.topStories){
+          let artItem = `<div class="stories bg-white rounded-lg p-2 m-3 shadow-sm">
+          <img src="${artImage}" width="100%" height="150px" class="img img-thumbnail article-img"></img>
+             <a href="http://www.foxnews.com/${artLink}"><h5 class="articleTitle">${artTitle}</h5></a>
+             <p class="articleDesc">${artDesc}</p>
+           </div>`;
+
+        if(Elements.topStories && artTitle){
           Elements.topStories.insertAdjacentHTML('beforeend', artItem);
         }
-    });
+        });
+      }
+  });
 });
+
+// Old version. Stopped using it as I couldn't fetch article thumbnails!!
+// newsFeed.getNewsStories().then(newsItems => {
+//     newsItems.forEach(item => {
+//         let artItem = `<div class="stories bg-white rounded-lg p-2 m-3">
+//         <a href="${item.link}"><h5 class="articleTitle">${item.title}</h5></a>
+//           <p class="articleDesc">${item.description}</p>
+//         </div>`;
+//         if(Elements.topStories){
+//           Elements.topStories.insertAdjacentHTML('beforeend', artItem);
+//         }
+//     });
+// });
 
 
 const viewSearchResults = (userPhoto, username, userID) => {

@@ -28,6 +28,9 @@ height: 100%;
 width: 70%;
 }
 
+.article-img {
+	object-fit: scale-down;
+}
 .hide {
 	display: none;
 }
