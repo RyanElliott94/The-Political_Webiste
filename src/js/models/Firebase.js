@@ -377,9 +377,11 @@ export const getMyPosts = (user, ele) => {
           var postData = childData.val();
           var postID = childData.key;
           var html = new PostHTML(postID, postData.photoThumb, postData.addedAt, postData.postBody, postData.displayName, postData.postIMG, postData.postVid);
-          const item = document.querySelector(".empty-1");
-          if(item){
-            item.insertAdjacentHTML('beforeend', html.getMyHTML());
+          const mainItem = document.querySelector(".empty-1");
+          const tabItem = document.querySelector(".tab-empty-1");
+          if(mainItem || tabItem){
+            mainItem.insertAdjacentHTML('beforeend', html.getMyHTML());
+            tabItem.insertAdjacentHTML('beforeend', html.getMyHTML());
           }
         });
       });
@@ -408,10 +410,12 @@ export const getOtherUsersPosts = (userID) => {
               var postData = childData.val();
               var postID = childData.key;
               var html = new PostHTML(postID, postData.photoThumb, postData.addedAt, postData.postBody, postData.displayName);
-              const item = document.querySelector(".empty-2");
-              if(item){
-                item.insertAdjacentHTML('beforeend', html.getHTML());
-              }
+              const mainItem = document.querySelector(".empty-2");
+              const tabItem = document.querySelector(".tab-empty-2");
+          if(mainItem || tabItem){
+            mainItem.insertAdjacentHTML('beforeend', html.getHTML());
+            tabItem.insertAdjacentHTML('beforeend', html.getHTML());
+          }
             });
           });
     }
@@ -466,7 +470,7 @@ export const getOtherUsersPosts = (userID) => {
             var data = dataChild.val();
             var url = `http://localhost:8080/view-profile.html?id=${data.userID}&isFriend=true`;
 
-            postHTML = `<div class="friend-item mx-auto rounded-lg bg-white clearfix mb-2" id="${data.userID}">
+            postHTML = `<div class="friend-item mx-auto shadow-sm rounded-lg bg-white clearfix mb-2 mt-2" id="${data.userID}">
             <img src="${data.photoThumb}" alt="" class="img img-thumbnail float-left friendsPhoto rounded-circle friend-profile-pic-src m-2">
             <p class="friend-username mt-2 mb-0"><a href="${url}">${data.displayName}</a></p>
             <p class="online-status">${isOnline(data.userID)}</p>

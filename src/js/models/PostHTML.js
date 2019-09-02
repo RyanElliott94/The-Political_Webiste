@@ -32,7 +32,7 @@ export default class PostHTML {
         <button class="btn btn-sm comment-post"><i class="far fa-comment"></i> Comment</button>
         <div class="comments border-top">
         </div>
-        <textarea class="form-control postBox p-2 mt-3 mx-auto"  style="min-width: 100px;width:600px;" spellcheck="value" id="inputMessage" placeholder="Give your opnion!"></textarea>
+        <textarea class="form-control postBox p-2 mt-3 mx-auto w-100"  style="min-width: 100px;width:600px;" spellcheck="value" id="inputMessage" placeholder="Give your opnion!"></textarea>
       </div>
       </div>`;
       return postHTML;
@@ -62,7 +62,7 @@ export default class PostHTML {
         <button class="btn btn-sm comment-post"><i class="far fa-comment"></i> Comment</button>
         <div class="comments border-top">
         </div>
-        <textarea class="form-control postBox p-2 mt-3 mx-auto"  disabled style="min-width: 100px;width:600px;" spellcheck="value" id="inputMessage" placeholder="Comments and likes have been disabled as I haven't implemented the feature yet"></textarea>
+        <textarea class="form-control postBox p-2 mt-3 mx-auto w-100"  disabled style="min-width: 100px;width:600px;" spellcheck="value" id="inputMessage" placeholder="Comments and likes have been disabled as I haven't implemented the feature yet"></textarea>
       </div>
       </div>`;
       return postHTML;

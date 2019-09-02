@@ -16,31 +16,32 @@
         <div class="d-flex mx-auto p-0">
             <a class="navbar-brand align-self-center p-0" href="index.html">
                 <img  width="30" height="30" class="d-inline-block align-top nav" alt="">
-                The Political
+                <span class="nav-title">The Political</span>
               </a>
-              
         <div class="collapse navbar-collapse p-0" id="navbarNav">
           <ul class="navbar-nav p-0">
-            <li class="nav-item align-self-center text-center">
+            <li class="nav-item align-self-center">
               <a class="nav-link p-0" href="index.html">Home</a>
             </li>
-            <ul class="navbar-nav">
                 <li class="nav-item logged-out text-center">
                   <a class="nav-link p-0 ml-2" href="./profile.html">My Profile</a>
                 </li>
-                </ul>
+                    <li class="nav-item text-center">
+                        <form class="form d-block d-md-none w-100">
+                            <input class="form-control search-users rounded-pill p-2" type="text" id="searchResults" placeholder="Find Someone" aria-label="Find Someone">
+                            <div class="results bg-white ml-2 mt-1 rounded-lg">
+                              </div>
+                        </form>
+                    </li>
           </ul>
         </div>
-
-        <form class="form">
+        <form class="form d-none d-md-block">
             <input class="form-control search-users rounded-pill p-2" type="text" id="searchResults" placeholder="Find Someone" aria-label="Find Someone">
             <div class="results bg-white ml-2 mt-1 rounded-lg">
               </div>
         </form>
-
         <form class="form-inline navbar-login navbar-light">
         <button type="button" class="btn btn-sm  bg-transparent logged-out align-self-center" id="nav-logout">Log Out</button>
-      
         <a href="./register.html"><button type="button" class="btn btn-sm m-2 bg-transparent logged-in" id="nav-signup">Register</button></a>
         <a href="./login.html"><button type="button" class="btn btn-sm m-2 bg-transparent logged-in" id="nav-login">Log In</button></a>
         </form>
@@ -68,7 +69,7 @@
             </form>
   </div>
 
-<div class="d-flex hide-home home-page shadow-sm flex-nowrap mx-5 h-auto mx-auto">
+<div class="container hide-home home-page h-100 clearfix mx-0 mx-md-auto">
 
   <!-- PHOTO VIEWER!! -->
     <div class="modal fade image-pop bg-dark" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
@@ -80,16 +81,16 @@
       </div>
 
   <!-- FIRST SECTION! -->
-    <div class="p-3 w-100 d-none d-md-block align-self-start hashtagPanel">
+    <!-- <div class="p-3 w-100 d-none d-md-block align-self-start hashtagPanel">
       <h3 class="text-center">Hashtags</h3>
-    </div>
+    </div> -->
 
     <!-- MIDDLE SECTION!  -->
-        <div class="border-left border-right border-bottom rounded-sm m-sm-0 mx-md-3 p-3 w-auto bg-white main-content align-self-start">
+        <div class="border-left border-right border-bottom m-sm-0 mx-md-3 p-sm-1 p-3 bg-white main-content mx-auto">
             <h3 class="text-center">News Feed</h3>
     
-            <div class="d-flex justify-content-center rounded-lg newPostContainer border w-100 mx-auto p-3 clearfix">
-                <div class="form-group">
+            <div class="d-flex justify-content-center rounded-lg newPostContainer border mx-auto p-3 clearfix">
+                <div class="form-group w-100">
                     <div class="userInfo clearfix">
                         <img src="" alt="" class="userPhoto rounded-circle img img-thumbnail float-left mb-2 mr-2">
                         <p class="username w-0 mt-1"></p>
@@ -98,7 +99,7 @@
                       
                       <video controls src="" width="100%" height="250px" class="img pre-post-vid rounded-lg mb-2" style="display: none"></video>
 
-                    <textarea class="form-control postBox p-2 mx-auto"  style="min-width: 100px;width:600px;" spellcheck="value" id="inputMessage" placeholder="Write a new post!"></textarea>
+                    <textarea class="form-control postBox p-2 mx-auto w-100"  style="min-width: 100px;width:600px;" spellcheck="value" id="inputMessage" placeholder="Write a new post!"></textarea>
                     
                     
                     <button id="add-pic-to-post" class="btn btn-sm bg-transparent m-0 p-0"><i class="fas fa-camera-retro m-0 mt-1" style="width:25px;height:25px;"></i></button>
@@ -112,34 +113,36 @@
                     </div>
             </div>
 
-    <ul class="nav nav-tabs nav-fill mt-3" id="homeTabs" role="tablist">
+    <ul class="nav nav-tabs nav-fill mt-3 mx-auto" id="homeTabs" role="tablist">
       <li class="nav-item">
         <a class="nav-link fade show active" id="myposts-tab" data-toggle="tab" href="#myPosts" role="tab" aria-controls="myposts" aria-selected="true">My Posts</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" id="friendpost-tab" data-toggle="tab" href="#friendsPosts" role="tab" aria-controls="friendpost" aria-selected="false">Friends Posts</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" id="news-tab" data-toggle="tab" href="#newsFeed" role="tab" aria-controls="newsFeed" aria-selected="false">Top News</a>
+      </li>
     </ul>
     
     <div class="tab-content">
       <div class="tab-pane fade active" id="myPosts" role="tabpanel" aria-labelledby="myposts-tab">
         <div class="empty-1" id="postItems">
-    
         </div>
-              </div>
+        </div>
       <div class="tab-pane" id="friendsPosts" role="tabpanel" aria-labelledby="friendpost-tab">
         <div class="empty-0" id="postItems">
-          
         </div>
-              </div>
+        </div>
+        <div class="tab-pane" id="newsFeed" role="tabpanel" aria-labelledby="newsfeed-tab">
+           <!-- NEWS FEED! -->
+      <div class="topStories" id="postItems">
+        
+      </div>
+      <p class="text-center text-wrap">Courtesy of FoxNews.com</p>
+          </div>
       </div>
     </div>
-
-     <!-- NEWS FEED! -->
-      <div class="align-self-start p-3 w-auto d-none d-md-block">
-          <h3 class="text-center topStories">Top Stories</h3>
-          <p class="text-center">Courtesy of FoxNews.com</p>
-     </div>
 </div>
 
 </body>

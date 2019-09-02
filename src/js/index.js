@@ -1,6 +1,6 @@
 const $ = require("jquery");
 const moment = require("moment");
-import * as newsFeed from "./models/NewsFeed";
+import {getNewsStories} from "./models/NewsFeed";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../css/style.css";
 import * as firebase from "./models/Firebase";
@@ -16,7 +16,6 @@ import '@fortawesome/fontawesome-free/js/brands'
 import { version } from "moment";
 
 const Elements = {
-    topStories: document.querySelector(".topStories"),
     navImg: document.querySelector('.nav'),
     navLogout: $("#nav-logout"),
     newPostBtn: $(".btn-new-post"),
@@ -69,16 +68,19 @@ Elements.addPostVid.on('change',(evt) => {
 });
 });
 
-    $(Elements.navLinks).click(function(){
+$(Elements.navLinks).click(function(){
       var id = $(this).attr('id');
       switch(id){
         case "myposts-tab":
             removeItems(".card");
             firebase.getMyPosts(firebase.getUserInfo().currentUser, ".empty-1");
-          break;
+            break;
           case "friendpost-tab":
               removeItems(".card");
               // firebase.getFriendsPosts(firebase.getUserInfo().currentUser, ".empty-0");
+            break;
+          case "news-tab":
+           getNewsStories();
             break;
       }
 });
@@ -118,37 +120,6 @@ Elements.searchUsers.on("keydown", (key) => {
       removeItems(".result-item");
     }
 });
-
-// Created my own news list. Only using FoxNews for now but It's far better than the previous Google RSS Feed!
-$(function () {
-  $.ajax({
-      type: 'GET',
-      url: 'https://www.foxnews.com/politics',
-      dataType: "html",
-      success: function (data) {
-        var article = $(data).find("article");
-        var artArray = Array.from(article);
-        artArray.length = 10;
-        artArray.forEach(item => {
-          var artTitle = $(item).find(".info .title").text();
-          var artLink = $(item).find(".info .title a").attr("href");
-          var artImage = $(item).find(".m a img").attr("src");
-          var artDesc = $(item).find(".info .content .dek a").text();
-
-          let artItem = `<div class="stories bg-white rounded-lg p-2 m-3 shadow-sm">
-          <img src="${artImage}" width="100%" height="150px" class="img img-thumbnail article-img"></img>
-             <a href="http://www.foxnews.com/${artLink}"><h5 class="articleTitle">${artTitle}</h5></a>
-             <p class="articleDesc">${artDesc}</p>
-           </div>`;
-
-        if(Elements.topStories && artTitle){
-          Elements.topStories.insertAdjacentHTML('beforeend', artItem);
-        }
-        });
-      }
-  });
-});
-
 // Old version. Stopped using it as I couldn't fetch article thumbnails!!
 // newsFeed.getNewsStories().then(newsItems => {
 //     newsItems.forEach(item => {

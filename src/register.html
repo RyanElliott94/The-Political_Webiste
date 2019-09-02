@@ -8,37 +8,44 @@
 
 </head>
 <body>
-		<nav class="navbar navbar-light p-1 navbar-expand-sm shadow-sm">
+		<nav class="navbar navbar-light p-1 navbar-expand-sm shadow-sm w-100">
         <button class="navbar-toggler  ml-auto" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="d-flex mx-auto p-0">
-            <a class="navbar-brand align-self-center p-0" href="index.html">
+            <a class="navbar-brand align-self-center p-0 d-none d-md-block" href="index.html">
                 <img  width="30" height="30" class="d-inline-block align-top nav" alt="">
-                The Political
+                <span class="nav-title">The Political</span>
               </a>
-              
         <div class="collapse navbar-collapse p-0" id="navbarNav">
           <ul class="navbar-nav p-0">
-            <li class="nav-item align-self-center text-center">
+            <li class="nav-item align-self-center">
               <a class="nav-link p-0" href="index.html">Home</a>
             </li>
+                <li class="nav-item logged-out text-center">
+                  <a class="nav-link p-0 ml-2" href="./profile.html">My Profile</a>
+                </li>
+                    <li class="nav-item text-center">
+                        <form class="form d-block d-md-none w-100">
+                            <input class="form-control search-users rounded-pill p-2" type="text" id="searchResults" placeholder="Find Someone" aria-label="Find Someone">
+                            <div class="results bg-white ml-2 mt-1 rounded-lg">
+                              </div>
+                        </form>
+                    </li>
           </ul>
         </div>
-
-        <form class="form">
+        <form class="form d-none d-md-block">
             <input class="form-control search-users rounded-pill p-2" type="text" id="searchResults" placeholder="Find Someone" aria-label="Find Someone">
             <div class="results bg-white ml-2 mt-1 rounded-lg">
               </div>
         </form>
-
         <form class="form-inline navbar-login navbar-light">
-        <a href="./register.html"><button type="button" class="btn btn-sm bg-transparent align-self-center logged-in" id="nav-signup">Register</button></a>
-        <a href="./login.html"><button type="button" class="btn btn-sm bg-transparent align-self-center logged-in" id="nav-login">Log In</button></a>
+        <button type="button" class="btn btn-sm  bg-transparent logged-out align-self-center" id="nav-logout">Log Out</button>
+        <a href="./register.html"><button type="button" class="btn btn-sm m-2 bg-transparent logged-in" id="nav-signup">Register</button></a>
+        <a href="./login.html"><button type="button" class="btn btn-sm m-2 bg-transparent logged-in" id="nav-login">Log In</button></a>
         </form>
       </div>
       </nav>
-
 
 
 <div class="d-flex bg-transparent h-100 flex-nowrap m-0 mx-auto">

@@ -26,7 +26,8 @@
         linkURL: $(".open-link"),
         viewProfile: $(".view-user"),
         coverPicProBar: $(".cover-progress"),
-        profilePicProBar: $(".profile-progress")
+        profilePicProBar: $(".profile-progress"),
+        navLinks: $(".nav-link"),
     };
 
     export const setMyUser = (user) => {
@@ -35,7 +36,16 @@
         app.fetchCoverPhoto(user, ProfileElements.coverPhotoSrc);
         app.fetchProfilePicture(user, ProfileElements.profilePicSrc);
         // app.getMyPosts(user, ".empty-1");
-        app.viewFriends(user, ".friend-sect");
+        if(ProfileElements.navLinks.is(":hidden")){
+            app.viewFriends(user, ".friend-sect");
+            showElements(ProfileElements.editProfileBtn);
+            showElements(ProfileElements.bioDesc);
+            showElements(ProfileElements.userName);
+            showElements(ProfileElements.links);
+        }else if(ProfileElements.navLinks.is(":visible")){
+            removeItems(".card");
+            app.getMyPosts(user, ".tab-empty-1");
+        }
         }
 
     $(document).ready(()=> {
@@ -94,6 +104,26 @@
         });
     });
 
+    $(ProfileElements.navLinks).click(function(){
+        var id = $(this).attr('id');
+        switch(id){
+          case "myProPosts-tab":
+                    removeItems(".card");
+                    app.getMyPosts(app.getUserInfo().currentUser, ".tab-empty-1");
+              break;
+            case "aboutMe-tab":
+                    showElements(ProfileElements.editProfileBtn);
+                    showElements(ProfileElements.bioDesc);
+                    showElements(ProfileElements.userName);
+                    showElements(ProfileElements.links);
+              break;
+            case "friendList-tab":
+            removeItems(".friend-item");
+            app.viewFriends(app.getUserInfo().currentUser, ".tab-friend-sect");
+              break;
+        }
+  });
+
     });
     
     const hideElements = ele => {
@@ -103,6 +133,10 @@
     const showElements = ele => {
         $(ele).css({display: "block"});
     }
+
+    const removeItems = ele => {
+        $(ele).remove();
+      }
 
     const uploadPhoto = (file, type, fileType) => {
         const metadata = {

@@ -8,7 +8,8 @@ const Elements = {
             username: $(".view-username"),
             bioView: $(".view-bio-desc"),
             links: $(".view-links"),
-            addFriend: $(".add-friend")
+            addFriend: $(".add-friend"),
+            navLinks: $(".nav-link"),
         }
 
         var oldURL = window.location.href;
@@ -47,3 +48,24 @@ const Elements = {
                 Elements.links.text(data.userLinks);
             });
         }
+
+        $(Elements.navLinks).click(function(){
+            var id = $(this).attr('id');
+            switch(id){
+              case "myProPosts-tab":
+                        removeItems(".card");
+                        app.getOtherUsersPosts(userID);
+                  break;
+                case "aboutMe-tab":
+                        viewProfileInfo(userID);
+                  break;
+                case "friendList-tab":
+                // removeItems(".friend-item");
+                // app.viewFriends(app.getUserInfo().currentUser, ".tab-friend-sect");
+                  break;
+            }
+      });
+
+      const removeItems = ele => {
+        $(ele).remove();
+      }
