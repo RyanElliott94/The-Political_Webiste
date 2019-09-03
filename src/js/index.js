@@ -13,7 +13,6 @@ import '@fortawesome/fontawesome-free/js/fontawesome'
 import '@fortawesome/fontawesome-free/js/solid'
 import '@fortawesome/fontawesome-free/js/regular'
 import '@fortawesome/fontawesome-free/js/brands'
-import { version } from "moment";
 
 const Elements = {
     navImg: document.querySelector('.nav'),
@@ -42,13 +41,15 @@ export const getTempCoverPic = () => {
   return tempCoverPic;
 };
 
+
+
 export const setHomeUser = (user) => {
   firebase.setOnline(user);
-  $("#friendpost-tab").tab("show");
-  firebase.getFriendsPosts(user, ".empty-0");
+  $("#myposts-tab").tab("show");
   firebase.fetchProfilePictureThumb(user, Elements.userThumb);
   }
 
+  
   $(Elements.choosePostPic).on("click", () => {
     Elements.addPostPic.focus().trigger('click');
 Elements.addPostPic.on('change',(evt) => {
@@ -77,7 +78,7 @@ $(Elements.navLinks).click(function(){
             break;
           case "friendpost-tab":
               removeItems(".card");
-              // firebase.getFriendsPosts(firebase.getUserInfo().currentUser, ".empty-0");
+              firebase.getFriendsPosts(firebase.getUserInfo().currentUser, ".empty-0");
             break;
           case "news-tab":
            getNewsStories();

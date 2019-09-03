@@ -30,7 +30,7 @@ const Elements = {
             if(isFriend == "true"){
                 Elements.addFriend.text("Remove Friend");
             }
-            app.getOtherUsersPosts(userID);
+            app.getOtherUsersPosts(userID, ".empty-2");
             viewProfileInfo(userID);
         });
 
@@ -54,7 +54,7 @@ const Elements = {
             switch(id){
               case "myProPosts-tab":
                         removeItems(".card");
-                        app.getOtherUsersPosts(userID);
+                        app.getOtherUsersPosts(userID, ".tab-empty-2");
                   break;
                 case "aboutMe-tab":
                         viewProfileInfo(userID);

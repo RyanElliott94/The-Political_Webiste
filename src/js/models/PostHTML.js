@@ -1,5 +1,6 @@
 const $ = require("jquery");
 const moment = require("moment");
+import {setupClicks} from "./Firebase";
 
 export default class PostHTML {
     constructor(postID, photoThumb, addedAt, postBody, displayName, postIMG, postVid){
@@ -35,6 +36,7 @@ export default class PostHTML {
         <textarea class="form-control postBox p-2 mt-3 mx-auto w-100"  style="min-width: 100px;width:600px;" spellcheck="value" id="inputMessage" placeholder="Give your opnion!"></textarea>
       </div>
       </div>`;
+      setupClicks();
       return postHTML;
     }
 
@@ -65,6 +67,8 @@ export default class PostHTML {
         <textarea class="form-control postBox p-2 mt-3 mx-auto w-100"  disabled style="min-width: 100px;width:600px;" spellcheck="value" id="inputMessage" placeholder="Comments and likes have been disabled as I haven't implemented the feature yet"></textarea>
       </div>
       </div>`;
+
+     setupClicks();
       return postHTML;
     }
 
@@ -87,5 +91,17 @@ export default class PostHTML {
         data = 'display:none;';
       }
       return data;
+    }
+
+    viewImage() {
+      $(".post-pic").on("click", function(event) {
+        var id = $(event.target).closest($(".post-img")).attr("src");
+        $(".image-pop").modal("show");
+        $(".view-image").attr("src", id);
+        });
+  
+  $('.image-pop').on('hidden.bs.modal', function () {
+    $(this).modal("dispose");
+  });
     }
 }

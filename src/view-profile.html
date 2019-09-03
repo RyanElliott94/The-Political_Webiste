@@ -53,16 +53,25 @@
 
 
 <div class="d-flex flex-nowrap mx-5 w-75 h-auto mx-auto bg-white border">
+
+  <!-- PHOTO VIEWER!! -->
+  <div class="modal fade image-pop bg-dark" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl bg-dark rounded-lg">
+        <div class="modal-content bg-dark">
+          <img src="" class="img img-thumbnail view-image rounded-lg w-100 h-auto p-3" alt="">
+        </div>
+      </div>
+    </div>
   <div class="shortInfo p-3 w-25 align-self-start d-none d-md-block">
-      <p class="card-title mb-0">Username</p>
-      <p class="view-username"></p>
+    <p class="card-title mb-0">Username</p>
+    <p class="view-username"></p>
 
-      <p class="card-title mb-0">Bio</p>
-      <p class="view-bio-desc"></p>
+    <p class="card-title mb-0">Bio</p>
+    <p class="view-bio-desc"></p>
 
-      <p class="card-title mb-0">Links</p>
-      <a class="open-link" href=""><p class="view-links"></p></a>
-      <button class="btn mt-1 btn btn-outline-dark add-friend">Add as friend</button>
+    <p class="card-title mb-0">Links</p>
+    <a class="open-link" href=""><p class="view-links"></p></a>
+    <button class="btn mt-1 btn btn-outline-dark add-friend">Add as friend</button>
                     </div>
 
 
@@ -100,10 +109,10 @@
 </div>
 <ul class="nav nav-tabs profileTab nav-fill mt-3 mx-auto" id="homeTabs" role="tablist">
     <li class="nav-item">
-      <a class="nav-link fade show active" id="aboutMe-tab" data-toggle="tab" href="#aboutMe" role="tab" aria-controls="aboutMe" aria-selected="true">About Me</a>
+      <a class="nav-link active" id="aboutMe-tab" data-toggle="tab" href="#aboutMe" role="tab" aria-controls="aboutMe" aria-selected="true">About Me</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link fade show" id="myProPosts-tab" data-toggle="tab" href="#myProPosts" role="tab" aria-controls="myProPosts" aria-selected="true">My Posts</a>
+        <a class="nav-link" id="myProPosts-tab" data-toggle="tab" href="#myProPosts" role="tab" aria-controls="myProPosts" aria-selected="true">My Posts</a>
     </li>
     <li class="nav-item">
       <a class="nav-link" id="friendList-tab" data-toggle="tab" href="#friendList" role="tab" aria-controls="friendList" aria-selected="false">Friends List</a>
@@ -111,25 +120,24 @@
   </ul>
   
   <div class="tab-content profileTab">
-    <div class="tab-pane fade" id="aboutMe" role="tabpanel" aria-labelledby="aboutMe-tab">
-        <div class="tab-shortInfo p-3 mx-auto text-center align-self-start">
-            <p class="card-title mb-0">Username</p>
-            <p class="view-username"></p>
+    <div class="tab-pane show active" id="aboutMe" role="tabpanel" aria-labelledby="aboutMe-tab">
+        <div class="tab-shortInfo p-3 mx-auto align-self-start">
+          <p class="card-title mb-0">Username</p>
+          <p class="view-username"></p>
     
-            <p class="card-title mb-0">Bio</p>
-            <p class="view-bio-desc"></p>
+          <p class="card-title mb-0">Bio</p>
+          <p class="view-bio-desc"></p>
     
-            <p class="card-title mb-0">Links</p>
-            <a class="open-link" href=""><p class="view-links"></p></a>
-            <button class="btn mt-1 btn btn-outline-dark add-friend">Add as friend</button>
+          <p class="card-title mb-0">Links</p>
+          <a class="open-link" href=""><p class="view-links"></p></a>
+          <button class="btn mt-1 btn btn-outline-dark add-friend">Add as friend</button>
         </div>
       </div>
-      <div class="tab-pane fade active" id="myProPosts" role="tabpanel" aria-labelledby="myProPosts-tab">
+      <div class="tab-pane" id="myProPosts" role="tabpanel" aria-labelledby="myProPosts-tab">
                 <div class="tab-empty-2" id="postItems"></div>
       </div>
-      <div class="tab-pane" id="friendList" role="tabpanel" aria-labelledby="friendList-tab">
-            <!-- <div class="tab-friend-sect">
-          </div> -->
+      <div class="tab-pane fade" id="friendList" role="tabpanel" aria-labelledby="friendList-tab">
+          
         </div>
     </div>
 </body>

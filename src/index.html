@@ -14,7 +14,7 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="d-flex mx-auto p-0">
-            <a class="navbar-brand align-self-center p-0" href="index.html">
+            <a class="navbar-brand align-self-center p-0 d-none d-md-block" href="index.html">
                 <img  width="30" height="30" class="d-inline-block align-top nav" alt="">
                 <span class="nav-title">The Political</span>
               </a>
@@ -69,7 +69,7 @@
             </form>
   </div>
 
-<div class="container hide-home home-page h-100 clearfix mx-0 mx-md-auto">
+<div class="container hide-home home-page h-100 mx-0 mx-md-auto">
 
   <!-- PHOTO VIEWER!! -->
     <div class="modal fade image-pop bg-dark" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
@@ -115,10 +115,10 @@
 
     <ul class="nav nav-tabs nav-fill mt-3 mx-auto" id="homeTabs" role="tablist">
       <li class="nav-item">
-        <a class="nav-link fade show active" id="myposts-tab" data-toggle="tab" href="#myPosts" role="tab" aria-controls="myposts" aria-selected="true">My Posts</a>
+        <a class="nav-link fade show" id="myposts-tab" data-toggle="tab" href="#myPosts" role="tab" aria-controls="myPosts" aria-selected="true">My Posts</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" id="friendpost-tab" data-toggle="tab" href="#friendsPosts" role="tab" aria-controls="friendpost" aria-selected="false">Friends Posts</a>
+        <a class="nav-link active" id="friendpost-tab" data-toggle="tab" href="#friendsPosts" role="tab" aria-controls="friendposts" aria-selected="false">Friends Posts</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" id="news-tab" data-toggle="tab" href="#newsFeed" role="tab" aria-controls="newsFeed" aria-selected="false">Top News</a>
@@ -130,7 +130,7 @@
         <div class="empty-1" id="postItems">
         </div>
         </div>
-      <div class="tab-pane" id="friendsPosts" role="tabpanel" aria-labelledby="friendpost-tab">
+      <div class="tab-pane fade" id="friendsPosts" role="tabpanel" aria-labelledby="friendpost-tab">
         <div class="empty-0" id="postItems">
         </div>
         </div>
