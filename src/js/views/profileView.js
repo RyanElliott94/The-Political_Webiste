@@ -28,27 +28,86 @@
         coverPicProBar: $(".cover-progress"),
         profilePicProBar: $(".profile-progress"),
         navLinks: $(".nav-link"),
+        searchUsers: $(".search-users")
     };
 
+    var currUser = null;
     export const setMyUser = (user) => {
         app.setOnline(user);
         getDefaultProPic();
         app.fetchCoverPhoto(user, ProfileElements.coverPhotoSrc);
         app.fetchProfilePicture(user, ProfileElements.profilePicSrc);
-        // app.getMyPosts(user, ".empty-1");
+        app.getPosts(user, "my-posts", ".empty-2");
+        app.viewFriends(user, ".friend-sect");
         if(ProfileElements.navLinks.is(":hidden")){
-            app.viewFriends(user, ".friend-sect");
             showElements(ProfileElements.editProfileBtn);
             showElements(ProfileElements.bioDesc);
             showElements(ProfileElements.userName);
             showElements(ProfileElements.links);
         }else if(ProfileElements.navLinks.is(":visible")){
             removeItems(".card");
-            app.getMyPosts(user, ".tab-empty-1");
+            app.getPosts(user, "my-posts", ".my-tab-posts");
         }
+        currUser = user;
         }
 
-    $(document).ready(()=> {
+     
+            $(".empty-2, .tab-empty").on("click", ".close", function(event) {
+              var id = $(event.target).closest(".myPostCards").attr("id");
+        
+              var vidEle = $(".post-vid").attr("src");
+              var imgURL = $(".post-img").attr("src");
+              if(vidEle.includes("http")){
+                  app.deleteFile("postVid");
+              }else if(imgURL.includes("http")){
+                  app.deleteFile("postImg");
+              }
+                  app.deletePost(currUser, id);
+              });
+        
+              $(".empty-2, .tab-empty").on("click", ".comment-post", eve => {
+                  var id = $(event.target).closest(".myPostCards").attr("id");
+                  $(`#${id}`).find(".comments").fadeToggle(1000);
+              });
+        
+                  $(".empty-2, .tab-empty").on("click", ".btn-new-comm", (event) => {
+                      var id = $(event.target).closest(".myPostCards").attr("id");
+                      var commentText = $(event.target).closest(".myPostCards").find(".commBox").val();
+                      console.log(commentText);
+                      app.addNewComment(commentText, currUser.displayName, currUser.uid, currUser.photoURL, id);
+                      $(".commBox").val("");
+                  });
+        
+                  $(".empty-2, .tab-empty").on("click", ".like-post", (event) => {
+                      var id = $(event.target).closest(".myPostCards").attr("id");
+                      app.FirebaseElements.removeLikeRef(id, currUser).once("value", snap => {
+                          if(snap.exists()){
+                              app.FirebaseElements.removeLikeRef(id, currUser).remove();
+                              app.listenForChanges(id, "remove-like");
+                          }else{
+                              app.likedPosts(currUser, id);
+                              app.listenForChanges(id, "likes");
+                          }
+                      });
+                    });
+        
+                    $(".empty-2, .tab-empty").on("click", ".del-com-btn", (eve) => {
+                      var cID = $(eve.target).closest(".myPostCards").attr("id");
+                      var commentID = $(eve.target).closest(".comment-item").attr("id");
+                          app.FirebaseElements.DelCommentRef(cID, commentID).remove();
+                          $(`#${commentID}`).remove();
+                  });
+          
+                  $(".empty-2, .tab-empty").on("click", ".post-pic", function(event) {
+                    var id = $(event.target).closest($(".post-img")).attr("src");
+                    $(".image-pop").modal("show");
+                    $(".view-image").attr("src", id);
+                    });
+              
+              $('.image-pop').on('hidden.bs.modal', function () {
+                $(this).modal("dispose");
+              });
+
     $(ProfileElements.uploadCoverPhoto).on("click", () => {
             ProfileElements.chooseCoverPic.focus().trigger('click');
         ProfileElements.chooseCoverPic.on('change',(evt) => {
@@ -104,12 +163,12 @@
         });
     });
 
-    $(ProfileElements.navLinks).click(function(){
+    $(ProfileElements.navLinks).on("click", function(){
         var id = $(this).attr('id');
         switch(id){
-          case "myProPosts-tab":
-                    removeItems(".card");
-                    app.getMyPosts(app.getUserInfo().currentUser, ".tab-empty-1");
+          case "myPosts-tab":
+            removeItems(".card");
+            app.getPosts(app.getUserInfo().currentUser, "my-posts", ".tab-empty");
               break;
             case "aboutMe-tab":
                     showElements(ProfileElements.editProfileBtn);
@@ -123,8 +182,6 @@
               break;
         }
   });
-
-    });
     
     const hideElements = ele => {
         $(ele).css({display: "none"});
@@ -166,7 +223,6 @@
                         var newUrl = new URL(oldURL);
                         var url = newUrl.pathname;
                         var filename = url.substring(url.lastIndexOf('F') + 1);
-                        app.deleteOldDP(filename);
 
                         ProfileElements.profilePicProBar.css({display: "none"});
                         app.updateProfilePicture(downloadURL);

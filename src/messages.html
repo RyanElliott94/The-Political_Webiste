@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html class="clearfix">
+<head>
+	<title>Leave Your Feedback</title>
+	 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=Quicksand:400,500,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700,900|Patua+One&display=swap" rel="stylesheet">
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0-11/css/all.min.css"></script>
+
+</head>
+<body>
+		<nav class="navbar navbar-light p-1 navbar-expand-sm shadow-sm w-100">
+        <button class="navbar-toggler  ml-auto" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="d-flex mx-auto p-0">
+            <a class="navbar-brand align-self-center p-0 d-none d-md-block" href="index.html">
+                <img  width="30" height="30" class="d-inline-block align-top nav" alt="">
+                <span class="nav-title">The Political</span>
+              </a>
+        <div class="collapse navbar-collapse p-0" id="navbarNav">
+          <ul class="navbar-nav p-0">
+            <li class="nav-item align-self-center">
+              <a class="nav-link p-0" href="index.html">Home</a>
+            </li>
+                <li class="nav-item logged-out text-center">
+                  <a class="nav-link p-0 ml-2" href="./profile.html">My Profile</a>
+                </li>
+                <li class="nav-item logged-out text-center">
+                  <a class="nav-link p-0 ml-2" href="./messages.html">Messenger</a>
+                </li>
+                <li class="nav-item text-center d-block d-md-none w-100">
+                  <button type="button" class="btn btn-sm rounded-lg btn-search"><i class="fas fa-search"></i> Search</button>
+              </li>
+          </ul>
+        </div>
+        <form class="form d-none d-md-block">
+          <input class="form-control search-users-main rounded-pill p-2" type="text" id="searchResults" placeholder="Find Someone" aria-label="Find Someone">
+          <div class="results bg-white ml-2 mt-1 rounded-lg">
+              <p class="no-result text-center mt-2" style="display:none">Nothing found!</p>
+            </div>
+      </form>
+        <form class="form-inline navbar-login navbar-light">
+        <button type="button" class="btn btn-sm  bg-transparent logged-out align-self-center" id="nav-logout">Log Out</button>
+        <a href="./register.html"><button type="button" class="btn btn-sm m-2 bg-transparent logged-in" id="nav-signup">Register</button></a>
+        <a href="./login.html"><button type="button" class="btn btn-sm m-2 bg-transparent logged-in" id="nav-login">Log In</button></a>
+        </form>
+      </div>
+      </nav>
+      <div class="modal fade search-pop" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl rounded-lg">
+            <div class="modal-content p-3">
+                <form class="form w-100">
+                    <input class="form-control search-users-pop rounded-pill p-2" type="text" id="searchResults" placeholder="Find Someone" aria-label="Find Someone">
+                    <div class="results-pop bg-white ml-2 mt-1 rounded-lg">
+                      <p class="no-result-pop text-center mt-4" style="display:none">Nothing found!</p>
+                      </div>
+                      <button type="button" class="btn btn-outline-dark rounded-pill btn-search-user mt-2">Search</button>
+                </form>
+            </div>
+          </div>
+      </div>
+      <div class="msgCoverSect mt-4 mx-auto">
+            <h1 class="no-msg"></h1>
+
+          <div class="main-info mt-4 mx-auto text-center" style="display: none">
+              <img class="senderThumb rounded-circle img mx-auto" style="object-fit:cover;width:125px;height:125px;"> 
+              <p class="senderName m-0"></p>
+              <p class="last-active"></p>
+          </div>
+          <img class="msgCover mx-0 p-0" alt="">
+      </div>
+
+      <div class="d-flex mx-auto msgs border">
+          <div class="msgSidePanel h-auto border-right" role="listbox" aria-orientation="vertical">
+            </div>
+          <div class="msgContent mx-auto h-100 bg-white clear-space">
+            <button class="btn btn-sm m-2 back-btn">Back</button>
+            <div class="d-inline-flex flex-column listItems mx-auto w-100 clearfix">
+            </div>
+
+            <div class="replyBox mx-5">
+                <div class="form-group w-100">
+                    <p class="read-status mb-0 text-right"></p>
+                       <img src="" alt="" width="100%" height="250px" class="img pre-msg-img rounded-lg mb-2">
+               
+               <!-- <video controls src="" width="100%" height="250px" class="img pre-msg-vid rounded-lg mb-2" style="display: none"></video> -->
+
+             <input type="text" class="form-control msgBox p-2 mx-auto w-100"  style="min-width: 100px;width:600px;" spellcheck="value" id="inputMessage" placeholder="Enter your message!"></input>
+             
+             
+             <!-- <button id="add-pic-to-msg" class="btn btn-sm bg-transparent m-0 p-0"><i class="fas fa-camera-retro m-0 mt-1" style="width:25px;height:25px;"></i></button>
+             <input type="file" name="file" accept="image/*" id="add-pic-to-msg" class="add-msg-pic">
+
+             <button class="btn btn-sm bg-transparent m-0 p-0" id="add-vid-to-msg"><i class="fas fa-video m-0 mt-1" style="width:25px;height:25px;"></i></button>
+             <input type="file" name="file" accept="video/*" id="add-vid-to-msg" class="add-msg-video">
+             <div class="progress-bar bg-success rounded-lg mt-1 w-auto upload-progress"  style="display:none;" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">10%</div> -->
+
+             <button type="button" class="btn btn-sm btn-reply-msg mt-2 btn-outline-dark float-right">Submit</button>
+                    </div>
+              </div>
+              </div>
+            </div>
+</body>
+</html>

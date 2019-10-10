@@ -2,7 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-    entry: ['babel-polyfill', './src/js/index.js', './src/js/views/loginView.js', './src/js/views/registerView.js', './src/js/views/profileView.js', './src/js/views/viewProfile.js'],
+    entry: ['babel-polyfill', './src/js/index.js', './src/js/views/loginView.js', './src/js/views/registerView.js', './src/js/views/profileView.js', './src/js/views/viewProfile.js', './src/js/views/messageView.js'],
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'js/bundle.js'
@@ -30,6 +30,10 @@ module.exports = {
         new HtmlWebpackPlugin({
             filename: 'view-profile.html',
             template: './src/view-profile.html'
+        }),
+        new HtmlWebpackPlugin({
+            filename: 'messages.html',
+            template: './src/messages.html'
         })
     ],
     module: {

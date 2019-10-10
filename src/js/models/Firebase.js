@@ -9,6 +9,9 @@ import {ProfileElements, setMyUser} from "../views/profileView";
 import {setHomeUser} from "../index";
 import{ getDefaultProPic} from "../index";
 import PostHTML from "./PostHTML";
+import Comments from "./Comments";
+import MessageHTML from "./MessageHTML";
+import { finished } from "stream";
 var uniqid = require('uniqid');
 initFirebase();
 
@@ -33,13 +36,17 @@ export const setUserInfo = (user) => {
 
 firebase.auth().onAuthStateChanged(user => {
     if(user){
-        listenForNewPosts(user);
         listenForRemovedPosts(user);
-        setHomeUser(user);
-        setMyUser(user);
+        listenForRemovedComments();
+        if(window.location.pathname.includes("/profile.html")){
+            setMyUser(user);
+        }else if(window.location.pathname.includes("/index.html")){
+            setHomeUser(user);
+        }
         setUserInfo(user);
         setProfileInfo(user);
         getProfileInfoFromDB(user);
+        getMessages();
         $(".logged-out").toggleClass("logged-out");
         $(".hide-home").toggleClass("hide-home");
     }else{
@@ -48,24 +55,87 @@ firebase.auth().onAuthStateChanged(user => {
     }
 });
 
-const listenForNewPosts = user => {
-    FirebaseElements.getMyPostsRef(user).on('child_added', function(snapshot) {
-        var postData = snapshot.val();
-        var postID = snapshot.key;
-        var html = new PostHTML(postID, postData.photoThumb, postData.addedAt, postData.postBody, postData.displayName, postData.postIMG, postData.postVid);
-        addPostToAllPosts(user, postData.postBody, postData.displayName, postID, postData.postIMG, postData.postVid);
-        const mainItem = document.querySelector(".empty-1");
-          const tabItem = document.querySelector(".tab-empty-1");
-          if(mainItem || tabItem){
-            mainItem.insertAdjacentHTML('beforeend', html.getMyHTML());
-            tabItem.insertAdjacentHTML('beforeend', html.getMyHTML());
+
+export const getPosts = (user, type, ele) => {
+    FirebaseElements.allPosts.on("child_added", snap => {
+        var postData = snap.val();
+        var postID = snap.key;
+        var postHtml = new PostHTML(postID, postData.photoThumb, postData.addedAt, postData.postBody, postData.displayName, postData.postIMG, postData.postVid, getNumLikes(postID), getNumComments(postID), user, postData.userID);
+    if(user && postData.userID == user.uid && type === "my-posts"){
+               const mainItem = $(ele);
+               $(mainItem).prepend(postHtml.getMyHTML());
+                postHtml.whosLiked(postID);
+                postHtml.getComments(postID);
+                
+     }else if(type === "friends-posts"){
+        FirebaseElements.friendsRef(user).once("value", snap => {
+            snap.forEach(item => {
+                var friendData = item.val();
+            if(friendData.userID === postData.userID){
+            const item = document.querySelector(ele);
+            if(item){
+                $(item).prepend(postHtml.getHTML());
+                postHtml.whosLiked(postID);
+                postHtml.getComments(postID);
+            }
+                }
+            });
+        });
+     }else if(postData.userID == user && type === "profile-posts"){
+              const item = $(ele);
+            //   const tabItem = $(ele);
+          if(item){
+            $(item).prepend(postHtml.getHTML());
+            // $(tabItem).prepend(postHtml.getHTML());
+            postHtml.whosLiked(postID);
+            postHtml.getComments(postID);
           }
+     }
+   });
+}
+
+const getNumLikes = (postID) => {
+    var numLikes = 0;
+    FirebaseElements.getLikeInfoRef(postID).once("value", snap => {
+        numLikes = snap.numChildren();
     });
-    setupClicks();
+    return numLikes;
+}
+
+const getNumComments = (postID) => {
+    var numComments = 0;
+    FirebaseElements.commentsRef(postID).once("value", snap => {
+        numComments = snap.numChildren();
+    });
+    return numComments;
+}
+
+
+export const listenForReply = (messageID) => {
+    $(".msg-items").remove();
+    FirebaseElements.newMessageRef(messageID).off();
+    FirebaseElements.getMessageUsersRef(messageID).once("value", snapshot => {
+        snapshot.forEach(data => {
+            var sender = data.val().senderID;
+            var currUserID = data.val().currUserID;
+            var otherUserID = data.val().otherID;
+            if(currUserID == getUserInfo().currentUser.uid || otherUserID == getUserInfo().currentUser.uid){
+                FirebaseElements.newMessageRef(messageID).on("child_added", data => {
+                    var msgData = data.val();
+                        var sender = msgData.senderID;
+                        var html = new MessageHTML(messageID, getUserInfo().currentUser.photoURL, msgData.sentAt, msgData.messageText, "", "", "", getUserInfo().currentUser, sender, msgData.read);
+                        const viewMessages = $(".listItems");
+                        if(viewMessages){
+                            $(viewMessages).append(html.getMessageItem());
+                        }
+                });
+            }
+        });
+    });
 }
 
 const listenForRemovedPosts = user => {
-    FirebaseElements.getMyPostsRef(firebase.auth().currentUser).on('child_removed', function(snapshot) {
+    FirebaseElements.getMyPostsRef(user).on('child_removed', function(snapshot) {
         var postID = snapshot.key;
         const item = $(`#${postID}`);
         if(item){
@@ -74,15 +144,95 @@ const listenForRemovedPosts = user => {
     });
 }
 
+export const listenForRemovedComments = () => {
+    FirebaseElements.allCommentsRef().on('child_removed', function(snapshot) {
+        var postID = snapshot.key;
+        const item = $(`#${postID}`);
+        if(item){
+          item.remove();
+        }
+    });
+}
+
+export const removeListeners = () => {
+    FirebaseElements.allPosts.off();
+}
+
+export const listenForChanges = (id, type) => {
+    switch(type){
+        case "messages":
+                FirebaseElements.getMessageUsersRef(id).once("value", snapshot => {
+                    snapshot.forEach(data => {
+                        var sender = data.val().senderID;
+                        var currUserID = data.val().currUserID;
+                        var otherUserID = data.val().otherID;
+                        if(currUserID == getUserInfo().currentUser.uid || otherUserID == getUserInfo().currentUser.uid){
+                            FirebaseElements.newMessageRef(id).on("child_changed", data => {
+                                var msgData = data.val();
+                                    var sender = msgData.senderID;
+                                    var html = new MessageHTML(id, getUserInfo().currentUser.photoURL, msgData.sentAt, msgData.messageText, "", "", "", getUserInfo().currentUser, sender, msgData.read);
+                            });
+                        }
+                    });
+                });
+        break;
+        case "posts":
+
+        break;
+        case "likes":
+            FirebaseElements.getLikeInfoRef(id).off();
+            FirebaseElements.getLikeInfoRef(id).on("child_added", snap => {
+                var numLikes = snap.numChildren() -1;
+                var html = new PostHTML(id, null, null, null, null, null, null, numLikes, getUserInfo().currentUser);
+                html.whosLiked(id);
+                html.updateLikes(id, numLikes);
+            });
+        break;
+        case "remove-like":
+                FirebaseElements.getLikeInfoRef(id).off();
+                FirebaseElements.getLikeInfoRef(id).once("value", snap => {
+                    var numLikes = snap.numChildren();
+                    $(`#${id}`).find(".icon").removeClass("fas").addClass("far").removeClass("liked");
+                    $(`#${id}`).find(".like-post span").text(numLikes);
+                    $(`#${id}`).find(".f-like-post span").text(numLikes);
+                });
+        break;
+    }
+}
+
 export const FirebaseElements = {
     coverPicRef: firebase.storage().ref('coverPictures/'),
     postPicRef: firebase.storage().ref('postPictures/'),
     postVidRef: firebase.storage().ref('postVideos/'),
+    msgPicRef: firebase.storage().ref('msgPictures/'),
+    msgVidRef: firebase.storage().ref('msgVideos/'),
     profilePicRef: firebase.storage().ref('profilePictures/'),
     allUsers: firebase.database().ref('/users/'),
     allPosts: firebase.database().ref(`/posts/`),
+    findMessages: firebase.database().ref(`/threads/`),
     allPostsByID: postID => {
         return firebase.database().ref(`/posts/${postID}`)
+    },
+    allCommentsRef: (postID) => {
+        return firebase.database().ref(`posts/${postID}/comments/`)
+    },
+    commentsRef: (postID) => {
+        return firebase.database().ref(`posts/${postID}/comments/`)
+    },
+    newCommentRef: (postID) => {
+        return firebase.database().ref(`posts/${postID}/comments/com_${uniqid()}`)
+    },
+    addLikedRef: (postID, user) => {
+        return firebase.database().ref(`/posts/${postID}/likedBy/${user.uid}/`)
+    },
+    getLikeInfoRef: (postID) => {
+        return firebase.database().ref(`/posts/${postID}/likedBy/`)
+    },
+    removeLikeRef: (postID, user) => {
+        return firebase.database().ref(`/posts/${postID}/likedBy/${user.uid}`)
+    },
+    DelCommentRef: (postID, commentID) => {
+        return firebase.database().ref(`/posts/${postID}/comments/${commentID}`)
     },
     userRef: (user) => {
         return firebase.database().ref(`/users/${user.uid}/`)
@@ -105,14 +255,23 @@ export const FirebaseElements = {
     otherUser: userID => {
         return firebase.database().ref(`/users/${userID}/`)
     },
-    otherUsersPostsRef: userID => {
-        return firebase.database().ref(`/users/${userID}/posts/`)
+    newMessageRef: (id) => {
+        return firebase.database().ref(`/threads/${id}/messages/`)
+    },
+    addUsersToMsgRef: (id) => {
+        return firebase.database().ref(`/threads/${id}/users`)
+    },
+    getMessageDataRef: (id) => {
+        return firebase.database().ref(`/threads/${id}/messages/`)
+    },
+    getMessageUsersRef: (id) => {
+        return firebase.database().ref(`/threads/${id}/users/`)
+    },
+    getMessageItemRef: (messageID, messageItem) => {
+        return firebase.database().ref(`/threads/${messageID}/messages/${messageItem}/`)
     }
 };
 
-const getPosts = (userID) => {
-
-}
 
 export const fetchProfilePicture = (user, element) => {
     if(user.photoURL){
@@ -175,6 +334,21 @@ FirebaseElements.otherUser(userID).once("value", snap => {
     });
 }
 
+export const setMessageAsRead = (messageID) => {
+    FirebaseElements.newMessageRef(messageID).once("value", snap => {
+        snap.forEach(data => {
+            var msgData = data.val();
+            if(!msgData.read){
+                if(msgData.senderID != getUserInfo().currentUser.uid){
+                    FirebaseElements.getMessageItemRef(messageID, data.key).update({
+                        read: true
+                    });
+                }
+            }
+        });
+});
+}
+
 export async function signUp(userEmail, userPassword) {
 const newUser = await firebase.auth().createUserWithEmailAndPassword(userEmail, userPassword);
     return newUser;
@@ -214,6 +388,10 @@ export const uploadPicture = (file, userID, meta, type) => {
         return FirebaseElements.postPicRef.child(`post-img-${uniqid()}`).put(file, meta);
     }else if(type === "post-vid"){
         return FirebaseElements.postVidRef.child(`post-vid-${uniqid()}`).put(file, meta);
+    }else if(type === "msg-img"){
+        return FirebaseElements.msgPicRef.child(`msg-img-${uniqid()}`).put(file, meta);
+    }else if(type === "msg-vid"){
+        return FirebaseElements.msgVidRef.child(`msg-vid-${uniqid()}`).put(file, meta);
     }
 }
 
@@ -264,6 +442,13 @@ export const setUsername = (user, usernameText) => {
     FirebaseElements.userRef(user).update({
         displayName: usernameText,
         addedAt: getTimeStamp()
+    })
+    .then(() => {
+        user.updateProfile({
+            displayName: usernameText,
+          }).catch(function(error) {
+            // An error happened.
+          });
     }).catch(error => {
         console.log(error.message);
     });
@@ -301,18 +486,33 @@ export const getProfileInfoFromDB = user => {
     });
 };
 
-// Currently not needed but will keep just in case!!
+export const addNewMessage = (msgBody, msgIMG, msgVid, read, currUserID, otherUserID) => {
+    let ranID = uniqid();
+    FirebaseElements.newMessageRef(ranID).push().set({
+        sentAt: getTimeStamp(),
+        messageText: msgBody,
+        msgImg: msgIMG,
+        msgVid: msgVid,
+        read: read,
+        senderID: currUserID
+    }).finally(() => {
+        FirebaseElements.addUsersToMsgRef(ranID).push({
+            otherID: otherUserID,
+            currUserID: currUserID
+        });
+    });
+}
 
-// export const getPostType = (user, type) => {
-//     var isMyPost;
-//     if(type === "myPost"){
-//         isMyPost = FirebaseElements.getPostsRef(user);
-//     }else{
-//         isMyPost = FirebaseElements.allPosts(user);
-//     }
-//     return isMyPost;
-// }
-//////////////////////////////////////////////////////
+export const addMessageReply = (msgID, msgBody, msgIMG, msgVid, read, currUserID) => {
+    FirebaseElements.newMessageRef(msgID).push().set({
+        sentAt: getTimeStamp(),
+        messageText: msgBody,
+        msgImg: msgIMG,
+        msgVid: msgVid,
+        read: read,
+        senderID: currUserID
+    });
+}
 
 export const addNewPost = (user, postText, username, imgURL, vidURL) => {
     let ranID = uniqid();
@@ -324,21 +524,42 @@ export const addNewPost = (user, postText, username, imgURL, vidURL) => {
     postIMG: imgURL,
     postVid: vidURL,
     addedAt: getTimeStamp()
+}).finally(() => {
+    addPostToAllPosts(user, postText, username, ranID, imgURL, vidURL, 0, getTimeStamp());
 })
 .catch(error => {
     console.log(error.message);
 });
 }
 
-const addPostToAllPosts = (user, postText, username, id, imgURL, vidURL) => {
+export const addPostToAllPosts = (user, postText, username, id, imgURL, vidURL, likes, added) => {
     FirebaseElements.allPostsByID(id).set({
         displayName: username,
         photoThumb: user.photoURL,
         userID: user.uid,
         postBody: postText,
         postIMG: imgURL,
-        postVid: vidURL
+        postVid: vidURL,
+        addedAt: added
      });
+}
+
+export const addNewComment = (commentText, username, userID, userPhoto, postID) => {
+    FirebaseElements.newCommentRef(postID).set({
+        postID: postID,
+        commentText: commentText,
+        added: getTimeStamp(),
+        userName: username,
+        userPhoto: userPhoto,
+        userID: userID
+    });
+}
+
+export const likedPosts = (user, postID) => {
+  FirebaseElements.addLikedRef(postID, user).set({
+        postID: postID,
+        userID: user.uid
+    });
 }
 
 export const addAsFriend = userID => {
@@ -373,25 +594,102 @@ export const deleteOldDP = (file) => {
     firebase.storage().ref(`profilePictures/${file}`).delete();
 }
 
-export const getMyPosts = (user, ele) => {
-    FirebaseElements.getMyPostsRef(user).once('value', function(snapshot) {
-        snapshot.forEach(function(childData) {
-          var postData = childData.val();
-          var postID = childData.key;
-          var html = new PostHTML(postID, postData.photoThumb, postData.addedAt, postData.postBody, postData.displayName, postData.postIMG, postData.postVid);
-          const item = document.querySelector(ele);
-        //   const tabItem = document.querySelector(".tab-empty-1");
-          if(item){
-            item.insertAdjacentHTML('beforeend', html.getMyHTML());
-          }else if(tabItem){
-              
-          }
-        });
-      });
-      setupClicks();
-    }
 
-    const deleteFile = type => {
+export const viewMessage = (messageID, msgView) => {
+            FirebaseElements.getMessageUsersRef(messageID).once("value", snapshot => {
+                snapshot.forEach(data => {
+                    var sender = data.val().senderID;
+                    var currUserID = data.val().currUserID;
+                    var otherUserID = data.val().otherID;
+                    if(currUserID == getUserInfo().currentUser.uid || otherUserID == getUserInfo().currentUser.uid){
+                        FirebaseElements.getMessageDataRef(messageID).once("value", snap => {
+                            snap.forEach(data => {
+                                var msgData = data.val();
+                                var sender = msgData.senderID;
+                                var html = new MessageHTML(messageID, getUserInfo().currentUser.photoURL, msgData.sentAt, msgData.messageText, "", "", "", getUserInfo().currentUser, sender);
+                                const viewMessages = $(msgView);
+                                if(viewMessages){
+                                    $(viewMessages).before(html.viewMessage());
+                                }
+                            });
+                        });
+                    }
+                });
+            });
+}
+
+export const getMessages = (msgUsers) => {
+    FirebaseElements.findMessages.once("value", sp => {
+        sp.forEach(dt => {
+            var messageID = dt.key;
+            FirebaseElements.getMessageUsersRef(messageID).once("value", snapshot => {
+                snapshot.forEach(data => {
+                    var currUserID = data.val().currUserID;
+                    var otherUserID = data.val().otherID;
+                    var currUser = getUserInfo().currentUser;
+                   
+                    if(currUserID == currUser.uid || otherUserID == currUser.uid){
+                        FirebaseElements.otherUser(getMessageOwner(currUserID, otherUserID)).once("value", snap => {
+                            var userData = snap.val();
+                            var html = new MessageHTML(messageID, userData.photoURL, "", "", userData.displayName, "", "", getUserInfo().currentUser);
+                            const viewMsgUsers = $(msgUsers);
+                            if(viewMsgUsers){
+                                $(viewMsgUsers).append(html.getMessages());
+                                getLastMessage();
+                            }
+                    });
+                    }
+                });
+            })
+        });
+    });
+}
+
+export const getLastMessage = () => {
+        var links = Array.from($(".nav-link"));
+                links.forEach(item => {
+                    var messageID = $(item).attr("id");
+                    if(messageID){
+                        FirebaseElements.newMessageRef(messageID).limitToLast(2).once("value", snap => {
+                            snap.forEach(data => {
+                                if(data.val().read){
+                                    $(".no-msg").text(`Sorry, ${getUserInfo().currentUser.displayName} you don't have any new messages!`);
+                                }else{
+                                    $(".no-msg").text(`Whey! ${getUserInfo().currentUser.displayName} you have some new messages!`);
+                                }
+                               $(item).find(".msg-preview").text(data.val().messageText);
+                    });
+            });
+                    }
+    });
+}
+
+export const getMessageInfo = (messageID) => {
+    FirebaseElements.getMessageUsersRef(messageID).once("value", snapshot => {
+        snapshot.forEach(data => {
+            var currUserID = data.val().currUserID;
+            var otherUserID = data.val().otherID;
+            var whichUser = currUserID;
+                FirebaseElements.otherUser(getMessageOwner(currUserID, otherUserID)).once("value", snap => {
+                        var userData = snap.val();
+                        var html = new MessageHTML(messageID, userData.photoURL, "", "", userData.displayName, "", "", getUserInfo().currentUser, "", "");
+                        html.coverInfo(userData.photoURL, userData.displayName, userData.coverPic, userData.isOnline, userData.addedAt);
+                });
+        });
+    })
+}
+
+const getMessageOwner = (currUserID, otherUserID) => {
+    var whichUser = currUserID;
+        if(currUserID == getUserInfo().currentUser.uid){
+            whichUser = otherUserID;
+        }else{
+             whichUser = currUserID;
+        }
+        return whichUser;
+}
+
+    export const deleteFile = type => {
         if(type === "postVid"){
             var vidURL = $(".post-vid").attr("src");
             var newVUrl = new URL(vidURL);
@@ -407,63 +705,7 @@ export const getMyPosts = (user, ele) => {
         }
     }
 
-    export const getOtherUsersPosts = (userID, ele) => {
-        FirebaseElements.otherUsersPostsRef(userID).once('value', function(snapshot) {
-            snapshot.forEach(function(childData) {
-              var postData = childData.val();
-              var postID = childData.key;
-              var html = new PostHTML(postID, postData.photoThumb, postData.addedAt, postData.postBody, postData.displayName);
-              const item = document.querySelector(ele);
-          if(item){
-            item.insertAdjacentHTML('beforeend', html.getHTML());
-          }
-            });
-          });
-    }
-
-    export const getFriendsPosts = (user, ele) => {
-        FirebaseElements.friendsRef(user).once("value", snap => {
-            snap.forEach(item => {
-                var friendData = item.val();
-
-                FirebaseElements.allPosts.once("value", snap => {
-                    snap.forEach(item => {
-                        var postData = item.val();
-                        var data = postData.postVid;
-                        if(data){
-                            data = 'display:block;';
-                        }else{
-                            data = 'display:none;';
-                        }
-
-                        if(friendData.userID === postData.userID){
-                            var postHTML = `<div class="card border-0 rounded-lg my-3 mx-auto myPostCards" id="${postData.postID}">
-                            <div class="card-header pb-0 border-0 bg-white">
-                            <img src="${postData.photoThumb}" alt="" class="userPhoto rounded-circle img img-thumbnail float-left mr-2 mb-2">
-                            <p class="username w-0 mt-1 mb-0">${postData.displayName}</p>
-                            <p class="postDate w-auto mt-0">${moment(postData.addedAt).fromNow()}</p>
-                            <video controls src="${postData.postVid}" width="100%" height="300px" class="img post-vid rounded-lg mb-2" style="${data}"></video>
-                            <div class="post-pic">
-                            <img src="${postData.postIMG}" alt="" width="100%" height="250px" class="img post-img rounded-lg mb-2">
-                            </div>
-                            </div>
-                            <hr class="mx-auto" style="width:90%">
-                          <div class="card-body pt-0 pb-0 px-4 text-dark border-0">
-                            <p class="card-text postText">${postData.postBody}</p>
-                          </div>`;
-                            const item = document.querySelector(`${ele}`);
-                        if(postData){
-                            item.insertAdjacentHTML('beforeend', postHTML);
-                        }
-
-                        setupClicks();
-                        }
-                    });
-                });
-            });
-        });
-    }
-
+  
     export const viewFriends = (user, ele) => {
         var postHTML;
     FirebaseElements.friendsRef(user).once("value", snapshot => {
@@ -484,29 +726,69 @@ export const getMyPosts = (user, ele) => {
     });
     }
 
+    export const removeClickListeners = () => {
+        $(".close").off("click");
+        $(".comment-post").off("click");
+        $(".btn-new-comm").off("click");
+        $(".like-post").off("click");
+    }
+
     export const setupClicks = () => {
-        $(".close").on( "click", function(event) {
-            var id = $(event.target).closest(".myPostCards").attr("id");
-    
-            var vidEle = $(".post-vid").attr("src");
-            var imgURL = $(".post-img").attr("src");
-            if(vidEle.includes("http")){
-                deleteFile("postVid");
-            }else if(imgURL.includes("http")){
-                deleteFile("postImg");
-            }
-                deletePost(firebase.auth().currentUser, id);
-            });
-    
-            $(".post-pic").on("click", function(event) {
-                var id = $(event.target).closest($(".post-img")).attr("src");
-                $(".image-pop").modal("show");
-                $(".view-image").attr("src", id);
+        $(".content").on("click", ".close", function(event) {
+                var id = $(event.target).closest(".myPostCards").attr("id");
+        
+                var vidEle = $(".post-vid").attr("src");
+                var imgURL = $(".post-img").attr("src");
+                if(vidEle.includes("http")){
+                    deleteFile("postVid");
+                }else if(imgURL.includes("http")){
+                    deleteFile("postImg");
+                }
+                    deletePost(firebase.auth().currentUser, id);
                 });
-          
-          $('.image-pop').on('hidden.bs.modal', function () {
-            $(this).modal("dispose");
-          });
+
+                $(".content").on("click", ".comment-post", eve => {
+                    var id = $(event.target).closest(".myPostCards").attr("id");
+                    $(`#${id}`).find(".comments").fadeToggle(1000);
+                });
+    
+                $(".content").on("click", ".btn-new-comm", (event) => {
+                        var id = $(event.target).closest(".myPostCards").attr("id");
+                        var commentText = $(event.target).closest(".myPostCards").find(".commBox").val();
+                        var user = firebase.auth().currentUser;
+                        addNewComment(commentText, user.displayName, user.uid, user.photoURL, id);
+                        $(commentText).val("");
+                    });
+
+                    $(".content").on("click", ".like-post", (event) => {
+                        var id = $(event.target).closest(".myPostCards").attr("id");
+                        FirebaseElements.removeLikeRef(id, getUserInfo().currentUser).once("value", snap => {
+                            if(snap.exists()){
+                                FirebaseElements.removeLikeRef(id, getUserInfo().currentUser).remove();
+                                listenForChanges(id, "remove-like");
+                            }else{
+                                likedPosts(getUserInfo().currentUser, id);
+                                listenForChanges(id, "likes");
+                            }
+                        });
+                      });
+                      
+                      $(".content").on("click", ".del-com-btn", (eve) => {
+                        var cID = $(eve.target).closest(".myPostCards").attr("id");
+                        var commentID = $(eve.target).closest(".comment-item").attr("id");
+                            app.FirebaseElements.DelCommentRef(cID, commentID).remove();
+                            $(`#${commentID}`).remove();
+                    });
+
+                $(".post-pic").on("click", function(event) {
+                    var id = $(event.target).closest($(".post-img")).attr("src");
+                    $(".image-pop").modal("show");
+                    $(".view-image").attr("src", id);
+                    });
+              
+              $('.image-pop').on('hidden.bs.modal', function () {
+                $(this).modal("dispose");
+              });
     }
 
 export const getUserInfo = () => {

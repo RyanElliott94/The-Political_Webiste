@@ -26,18 +26,18 @@
                 <li class="nav-item logged-out text-center">
                   <a class="nav-link p-0 ml-2" href="./profile.html">My Profile</a>
                 </li>
-                    <li class="nav-item text-center">
-                        <form class="form d-block d-md-none w-100">
-                            <input class="form-control search-users rounded-pill p-2" type="text" id="searchResults" placeholder="Find Someone" aria-label="Find Someone">
-                            <div class="results bg-white ml-2 mt-1 rounded-lg">
-                              </div>
-                        </form>
+                <li class="nav-item logged-out text-center">
+                  <a class="nav-link p-0 ml-2" href="./messages.html">Messenger</a>
+                </li>
+                    <li class="nav-item text-center d-block d-md-none w-100">
+                        <button type="button" class="btn btn-sm rounded-lg btn-search"><i class="fas fa-search"></i> Search</button>
                     </li>
           </ul>
         </div>
         <form class="form d-none d-md-block">
-            <input class="form-control search-users rounded-pill p-2" type="text" id="searchResults" placeholder="Find Someone" aria-label="Find Someone">
+            <input class="form-control search-users-main rounded-pill p-2" type="text" id="searchResults" placeholder="Find Someone" aria-label="Find Someone">
             <div class="results bg-white ml-2 mt-1 rounded-lg">
+                <p class="no-result text-center mt-2" style="display:none">Nothing found!</p>
               </div>
         </form>
         <form class="form-inline navbar-login navbar-light">
@@ -71,6 +71,20 @@
 
 <div class="container hide-home home-page h-100 mx-0 mx-md-auto">
 
+    <div class="modal fade search-pop" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl rounded-lg">
+            <div class="modal-content p-3">
+                <form class="form w-100">
+                    <input class="form-control search-users-pop rounded-pill p-2" type="text" id="searchResults-pop" placeholder="Find Someone" aria-label="Find Someone">
+                    <div class="results-pop bg-white ml-2 mt-1 rounded-lg">
+                      <p class="no-result-pop text-center mt-4" style="display:none">Nothing found!</p>
+                      </div>
+                      <button type="button" class="btn btn-outline-dark rounded-pill btn-search-user mt-2">Search</button>
+                </form>
+            </div>
+          </div>
+      </div>
+
   <!-- PHOTO VIEWER!! -->
     <div class="modal fade image-pop bg-dark" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl bg-dark rounded-lg">
@@ -87,7 +101,6 @@
 
     <!-- MIDDLE SECTION!  -->
         <div class="border-left border-right border-bottom m-sm-0 mx-md-3 p-sm-1 p-3 bg-white main-content mx-auto">
-            <h3 class="text-center">News Feed</h3>
     
             <div class="d-flex justify-content-center rounded-lg newPostContainer border mx-auto p-3 clearfix">
                 <div class="form-group w-100">
@@ -109,41 +122,29 @@
                     <input type="file" name="file" accept="video/*" id="add-vid-to-post" class="add-post-video">
                     <div class="progress-bar bg-success rounded-lg mt-1 w-auto upload-progress"  style="display:none;" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">10%</div>
 
-                    <button type="button" class="btn btn-sm btn-new-post mt-2 btn-outline-dark float-right">Submit</button>
+                    <button type="button" class="btn btn-sm btn-new-post mt-2 rounded-pill btn-outline-dark float-right">Submit</button>
                     </div>
             </div>
 
-    <ul class="nav nav-tabs nav-fill mt-3 mx-auto" id="homeTabs" role="tablist">
-      <li class="nav-item">
-        <a class="nav-link fade show" id="myposts-tab" data-toggle="tab" href="#myPosts" role="tab" aria-controls="myPosts" aria-selected="true">My Posts</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link active" id="friendpost-tab" data-toggle="tab" href="#friendsPosts" role="tab" aria-controls="friendposts" aria-selected="false">Friends Posts</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" id="news-tab" data-toggle="tab" href="#newsFeed" role="tab" aria-controls="newsFeed" aria-selected="false">Top News</a>
-      </li>
-    </ul>
-    
-    <div class="tab-content">
-      <div class="tab-pane fade active" id="myPosts" role="tabpanel" aria-labelledby="myposts-tab">
-        <div class="empty-1" id="postItems">
+    <div class="tabs mt-3 w-100 text-center">
+      <button class="btn btn-sm my-posts-btn m-0">My Posts</button>
+      <!-- <hr class="divider p-0 m-0"> -->
+      <button class="btn btn-sm friend-btn m-0">Friends Posts</button>
+      <!-- <hr class="divider p-0 m-0"> -->
+      <button class="btn btn-sm news-btn m-0">News</button>
+    </div>
+    <div class="content mx-auto">
+        <div class="empty-0">
         </div>
-        </div>
-      <div class="tab-pane fade" id="friendsPosts" role="tabpanel" aria-labelledby="friendpost-tab">
-        <div class="empty-0" id="postItems">
-        </div>
-        </div>
-        <div class="tab-pane" id="newsFeed" role="tabpanel" aria-labelledby="newsfeed-tab">
-           <!-- NEWS FEED! -->
-      <div class="topStories" id="postItems">
+        <div class="empty-1">
+          </div>
+      <div class="topStories">
         
       </div>
-      <p class="text-center text-wrap">Courtesy of FoxNews.com</p>
-          </div>
+      <!-- <p class="text-center text-wrap">Courtesy of FoxNews.com</p>
+          </div> -->
       </div>
     </div>
 </div>
-
 </body>
 </html>

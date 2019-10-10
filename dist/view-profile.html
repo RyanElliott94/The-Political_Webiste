@@ -24,20 +24,20 @@
                 <li class="nav-item logged-out text-center">
                   <a class="nav-link p-0 ml-2" href="./profile.html">My Profile</a>
                 </li>
-                    <li class="nav-item text-center">
-                        <form class="form d-block d-md-none w-100">
-                            <input class="form-control search-users rounded-pill p-2" type="text" id="searchResults" placeholder="Find Someone" aria-label="Find Someone">
-                            <div class="results bg-white ml-2 mt-1 rounded-lg">
-                              </div>
-                        </form>
-                    </li>
+                <li class="nav-item logged-out text-center">
+                  <a class="nav-link p-0 ml-2" href="./messages.html">Messenger</a>
+                </li>
+                <li class="nav-item text-center d-block d-md-none w-100">
+                  <button type="button" class="btn btn-sm rounded-lg btn-search"><i class="fas fa-search"></i> Search</button>
+              </li>
           </ul>
         </div>
         <form class="form d-none d-md-block">
-            <input class="form-control search-users rounded-pill p-2" type="text" id="searchResults" placeholder="Find Someone" aria-label="Find Someone">
-            <div class="results bg-white ml-2 mt-1 rounded-lg">
-              </div>
-        </form>
+          <input class="form-control search-users-main rounded-pill p-2" type="text" id="searchResults" placeholder="Find Someone" aria-label="Find Someone">
+          <div class="results bg-white ml-2 mt-1 rounded-lg">
+              <p class="no-result text-center mt-2" style="display:none">Nothing found!</p>
+            </div>
+      </form>
         <form class="form-inline navbar-login navbar-light">
         <button type="button" class="btn btn-sm  bg-transparent logged-out align-self-center" id="nav-logout">Log Out</button>
         <a href="./register.html"><button type="button" class="btn btn-sm m-2 bg-transparent logged-in" id="nav-signup">Register</button></a>
@@ -51,22 +51,72 @@
     <img src="" alt="" class="view-profile-pic-src ml-4 rounded-circle clearfix">
 </section>
 
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label for="recipient-name" class="col-form-label">Recipient:</label>
+              <input type="text" class="form-control" id="recipient-name">
+            </div>
+            <div class="form-group">
+              <label for="message-text" class="col-form-label">Message:</label>
+              <textarea class="form-control" id="message-text"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary new-msg">Send message</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
 <div class="d-flex flex-nowrap mx-5 w-75 h-auto mx-auto bg-white border">
+  <div class="modal fade search-pop" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl rounded-lg">
+        <div class="modal-content p-3">
+            <form class="form w-100">
+                <input class="form-control search-users-pop rounded-pill p-2" type="text" id="searchResults" placeholder="Find Someone" aria-label="Find Someone">
+                <div class="results-pop bg-white ml-2 mt-1 rounded-lg">
+                  <p class="no-result-pop text-center mt-4" style="display:none">Nothing found!</p>
+                  </div>
+                  <button type="button" class="btn btn-outline-dark rounded-pill btn-search-user mt-2">Search</button>
+            </form>
+        </div>
+      </div>
+  </div>
+  <!-- PHOTO VIEWER!! -->
+  <div class="modal fade image-pop bg-dark" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl bg-dark rounded-lg">
+        <div class="modal-content bg-dark">
+          <img src="" class="img img-thumbnail view-image rounded-lg w-100 h-auto p-3" alt="">
+        </div>
+      </div>
+    </div>
   <div class="shortInfo p-3 w-25 align-self-start d-none d-md-block">
-      <p class="card-title mb-0">Username</p>
-      <p class="view-username"></p>
+    <p class="card-title mb-0">Username</p>
+    <p class="view-username"></p>
 
-      <p class="card-title mb-0">Bio</p>
-      <p class="view-bio-desc"></p>
+    <p class="card-title mb-0">Bio</p>
+    <p class="view-bio-desc"></p>
 
-      <p class="card-title mb-0">Links</p>
-      <a class="open-link" href=""><p class="view-links"></p></a>
-      <button class="btn mt-1 btn btn-outline-dark add-friend">Add as friend</button>
+    <p class="card-title mb-0">Links</p>
+    <a class="open-link" href=""><p class="view-links"></p></a>
+    <button class="btn mt-1 btn btn-outline-dark add-friend">Add as friend</button>
+    <button class="btn mt-1 btn btn-outline-dark send-msg">Send a message</button>
                     </div>
 
 
-    <div class="border-left border-right p-3 w-75 main-content align-self-start d-none d-md-block">
+    <div class="border-left border-right p-3 w-75 view-profile-content align-self-start d-none d-md-block">
       <!-- Posting from the profile still needs more attention as there's some issues to resolve!! -->
         <!-- <div class="d-flex justify-content-center rounded-lg newPostContainer border w-100 mx-auto p-3 px-0 clearfix">
             <div class="form-group">
@@ -91,7 +141,7 @@
                 <button type="button" class="btn btn-sm btn-new-post mt-2 btn-outline-dark float-right">Submit</button>
                 </div>
         </div> -->
-        <div class="empty-2"></div>
+        <div class="empty-3"></div>
       </div>
 
     <div class="align-self-start w-25 d-none d-md-block">
@@ -100,36 +150,38 @@
 </div>
 <ul class="nav nav-tabs profileTab nav-fill mt-3 mx-auto" id="homeTabs" role="tablist">
     <li class="nav-item">
-      <a class="nav-link fade show active" id="aboutMe-tab" data-toggle="tab" href="#aboutMe" role="tab" aria-controls="aboutMe" aria-selected="true">About Me</a>
+      <a class="nav-link active show" id="about-tab" data-toggle="tab" href="#about" role="tab" aria-controls="aboutMe" aria-selected="false">About Me</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link fade show" id="myProPosts-tab" data-toggle="tab" href="#myProPosts" role="tab" aria-controls="myProPosts" aria-selected="true">My Posts</a>
+        <a class="nav-link" id="otherPosts-tab" data-toggle="tab" href="#otherPosts" role="tab" aria-controls="otherPosts" aria-selected="false">Posts</a>
     </li>
-    <li class="nav-item">
-      <a class="nav-link" id="friendList-tab" data-toggle="tab" href="#friendList" role="tab" aria-controls="friendList" aria-selected="false">Friends List</a>
-    </li>
+    <!-- <li class="nav-item">
+      <a class="nav-link" id="friendsList-tab" data-toggle="tab" href="#friendsList" role="tab" aria-controls="friendsList" aria-selected="false">Friends List</a>
+    </li> -->
   </ul>
   
   <div class="tab-content profileTab">
-    <div class="tab-pane fade" id="aboutMe" role="tabpanel" aria-labelledby="aboutMe-tab">
-        <div class="tab-shortInfo p-3 mx-auto text-center align-self-start">
-            <p class="card-title mb-0">Username</p>
-            <p class="view-username"></p>
+    <div class="tab-pane fade active show" id="about" role="tabpanel" aria-labelledby="about-tab">
+        <div class="tab-shortInfo p-3 mx-auto align-self-start">
+          <p class="card-title mb-0">Username</p>
+          <p class="view-username"></p>
     
-            <p class="card-title mb-0">Bio</p>
-            <p class="view-bio-desc"></p>
+          <p class="card-title mb-0">Bio</p>
+          <p class="view-bio-desc"></p>
     
-            <p class="card-title mb-0">Links</p>
-            <a class="open-link" href=""><p class="view-links"></p></a>
-            <button class="btn mt-1 btn btn-outline-dark add-friend">Add as friend</button>
+          <p class="card-title mb-0">Links</p>
+          <a class="open-link" href=""><p class="view-links"></p></a>
+          <button class="btn mt-1 btn btn-outline-dark add-friend">Add as friend</button>
+
+          <button class="btn mt-1 btn btn-outline-dark send-msg">Send a message</button>
         </div>
       </div>
-      <div class="tab-pane fade active" id="myProPosts" role="tabpanel" aria-labelledby="myProPosts-tab">
+      <div class="tab-pane" id="otherPosts" role="tabpanel" aria-labelledby="myProPosts-tab">
                 <div class="tab-empty-2" id="postItems"></div>
       </div>
-      <div class="tab-pane" id="friendList" role="tabpanel" aria-labelledby="friendList-tab">
-            <!-- <div class="tab-friend-sect">
-          </div> -->
+      <div class="tab-pane fade" id="friendsList" role="tabpanel" aria-labelledby="friendsList-tab">
+          <div class="f-friend-sect">
+            </div>
         </div>
     </div>
 <script type="text/javascript" src="js/bundle.js"></script></body>

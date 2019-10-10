@@ -23,7 +23,7 @@ export function getNewsStories() {
 $(function () {
   $.ajax({
       type: 'GET',
-      url: 'https://www.foxnews.com/politics',
+      url: 'https://cors-anywhere.herokuapp.com/https://www.foxnews.com/politics',
       dataType: "html",
       success: function (data) {
         var article = $(data).find("article");
@@ -35,7 +35,7 @@ $(function () {
           var artImage = $(item).find(".m a img").attr("src");
           var artDesc = $(item).find(".info .content .dek a").text();
 
-          let artItem = `<div class="card border-0 shadow-sm rounded-lg my-3 pb-3 mx-auto myPostCards">
+          let artItem = `<div class="card border-0 shadow-sm rounded-lg my-3 pb-3 mx-auto news-item">
           <div class="card-header pb-0 border-0 bg-white">
           <img src="${artImage}" alt="" class="img img-thumbnail article-img float-left mr-2 mb-2">
           <a href="http://www.foxnews.com/${artLink}"><h5 class="articleTitle">${artTitle}</h5></a>

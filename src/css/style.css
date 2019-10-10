@@ -5,18 +5,28 @@ body {
 	height: 100%;
 	color: #363A47;
 	font-size: .9rem;
-
 	/* font-family: 'Lato', sans-serif;
     font-family: 'Patua One', cursive; */
 }
+
+/* .msg-body {
+	background-color: white;
+} */
+
 .clearfix {
 	overflow: auto;
-  }
+}
 
 html {
 	position: relative;
 	height: 100%;
 }
+
+/* html .msg-page{
+	overflow: hidden;
+	position: relative;
+} */
+
 
 .hide-home {
 	display: none !important;
@@ -27,13 +37,49 @@ background-color: whitesmoke;
 height: 100%;
 }
 
+.my-posts-btn, .friend-btn, .news-btn{
+	width: 20%;
+}
+
+.my-posts-btn:hover{
+	border-top-left-radius: 15px;
+	border-bottom-left-radius: 15px;
+	background-color: #363A47;
+	color: white;
+}
+
+.news-btn:hover{
+	border-top-right-radius: 15px;
+	border-bottom-right-radius: 15px;
+	background-color: #363A47;
+	color: white;
+}
+
+.friend-btn:hover{
+	background-color: #363A47;
+	color: white;
+}
+
+
+.divider{
+	transform: rotate(90deg);
+     width: 20px;
+}
+.clear-space {
+	position: relative;
+	overflow-y: auto;
+}
+
 /* WIDTH SETTINGS */
-.d-flex, .newPostContainer, .myPostCards, .nav-tabs {
+.d-flex {
 	width: 75%;
 }
 
+.content, .newPostContainer, .nav-tabs, .news-item{
+	width: 60%;
+}
 .container {
-	width: 70%;
+	width: 90%;
 }
 
 .article-img {
@@ -56,7 +102,7 @@ height: 100%;
 	width: 25%;
 }
 
-.search-users {
+.search-users, .search-users-main, .commBox {
 	height: 30px;
 }
 
@@ -69,6 +115,28 @@ height: 100%;
     top: 10%;
 }
 
+.msg-page {
+	background-color: white;
+	height: 100%;
+	width: 80%;
+}
+
+/* .msg-items {
+	width: 70%;
+} */
+
+.msg-text {
+	max-width: 50%;
+	font-size: 14px;
+	border-radius: 20px 20px 20px 20px;
+}
+
+.msgMain {
+	background-color: white;
+}
+.newMsgContainer {
+	background-color: white;
+}
 /* .newPostContainer{
 	color:whitesmoke;
 	background-color: #363A47;
@@ -121,7 +189,7 @@ display: none;
 	display: block;
 }
 
-.choose-pro-pic, .choose-cover-pic, .add-post-pic, .add-post-video {
+.choose-pro-pic, .choose-cover-pic, .add-post-pic, .add-post-video, .add-msg-video, .add-msg-pic {
 	width: 0.1px;
 	height: 0.1px;
 	opacity: 0;
@@ -232,6 +300,114 @@ display: none;
 	display: none;
 }
 
+.com-like{
+	font-size: 25px;
+}
+
+.liked {
+	color: red;
+}
+
+.msgSidePanel {
+	width: 25%;
+	border-bottom-left-radius: 10px;
+}
+
+.msgs {
+	width: 65%;
+	height: 64.5%;
+	border-bottom-left-radius: 10px;
+	border-bottom-right-radius: 10px;
+}
+
+.msgContent {
+	width: 100%;
+	border-bottom-right-radius: 10px;
+}
+
+.msgCover {
+	filter: blur(5px);
+	position: relative;
+	width: 100%;
+	height: 280px;
+	object-fit: cover;
+	transform:scale(1.1);
+}
+
+.msgCoverSect {
+	width: 65%;
+	background-color: #363A47;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	overflow: hidden;
+}
+
+.break {
+	flex-basis: 100%;
+	height: 0;
+  }
+
+.main-info {
+	color: white;
+	position: absolute;
+	left: 45%;
+	z-index: 1;
+}
+
+.no-msg {
+	color: white;
+	position: absolute;
+	top: 15%;
+	left: 27%;
+	z-index: 1;
+}
+
+.msg-left {
+	background-color: whitesmoke;
+	color: #363A47;
+	font-weight: 400;
+}
+
+.msg-right {
+	background-color: #363A47;
+	color: white;
+	font-weight: 400;
+}
+
+.msg-sent, .com-sent {
+	font-size: 10px;
+	color: #9c9c9c;
+}
+
+.msg-panel-item {
+	width: auto;
+	color: #363A47;
+}
+
+.msg-panel-item:hover {
+	background-color: #363A47;
+	color: white;
+	border-radius: 20px;
+}
+
+.msg-preview {
+	color: #9c9c9c;
+	font-size: 13px;
+}
+
+.read-status{
+	color: #9c9c9c;
+	font-size: 10px;
+}
+
+.msgBox, .postBox, .postText {
+	white-space: pre-wrap;
+}
+
+.back-btn{
+	display: none;
+}
+
 /* .nav-link:hover, a:hover {
 	color: #464646;
 }  */
@@ -241,8 +417,22 @@ display: none;
 	background-color: #69D4AC;
 } */
 
+.msgContent::-webkit-scrollbar {
+    width: 0.7em;
+}
+ 
+.msgContent::-webkit-scrollbar-track {
+	border-radius: 15px;
+}
+ 
+.msgContent::-webkit-scrollbar-thumb {
+  background-color: darkgrey;
+  outline: 1px solid slategrey;
+  border-radius: 15px;
+}
+
 @media (min-width: 320px) and (max-width: 480px) {
-	.container, .newPostContainer, .myPostCards, .nav-tabs {
+	.container, .newPostContainer, .myPostCards, .nav-tabs, .news-item, .msgs, .msgCoverSect, .msgSidePanel, .content {
 		width: 100%;
 	}
 
@@ -265,16 +455,71 @@ display: none;
 	.profileTab{
 		display:block;
 	}
+
+	.my-posts-btn, .friend-btn, .news-btn{
+		width: 30%;
+	}
+
+	.msgCoverSect {
+		background-color: #363A47;
+		border-radius: 0;
+		overflow: hidden;
+	}
+
+	.main-info {
+		color: white;
+		position: absolute;
+		left: 37%;
+		z-index: 1;
+	}
+
+	.msgContent{
+		display: none;
+	}
+
+	.back-btn{
+		display: block;
+	}
+
+	.msgSidePanel{
+		width: 100%;
+	}
+
+	.msg-text{
+		line-break: auto;
+		line-height: 1;
+	}
   }
 
 @media (min-width: 768px) and (max-width: 1024px) {
-	.container, .newPostContainer, .myPostCards, .nav-tabs {
+	.container, .newPostContainer, .myPostCards, .nav-tabs, .news-item, .content {
 		width: 100%;
+	}
+
+	.msgSidePanel {
+		width: 35%;
+	}
+
+	.msgs, .msgCoverSect{
+		width: 90%;
+	}
+
+	.msgContent{
+		width: 100%;
+		display: block;
+	}
+
+	.back-btn{
+		display: none;
 	}
   }
 
   @media (min-width: 1024px) and (max-width: 1366px) {
 	.container, .newPostContainer, .myPostCards, .nav-tabs {
 		width: 75%;
+	}
+
+	.back-btn{
+		display: none;
 	}
   }
